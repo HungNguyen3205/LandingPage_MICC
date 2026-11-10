@@ -29,3 +29,7 @@ dist-ssr
 
 # Real API keys for PHP hosting
 public/api/config.local.php
+
+.vercel
+.env*
+!.env.example
