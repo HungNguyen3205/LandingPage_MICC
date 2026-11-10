@@ -144,7 +144,12 @@ export const LeadForm: React.FC<LeadFormProps> = ({
     setIsSubmitting(true);
 
     try {
-      const result = await leadService.submitLead(formData);
+      // Gửi riêng căn đã chọn; bỏ câu tự điền sẵn khỏi lời nhắn để tin không bị lặp
+      const unit = selectedUnit
+        ? `${selectedUnit.code} · ${selectedUnit.zone} · ${selectedUnit.priceLabel} ${selectedUnit.price} tỷ`
+        : undefined;
+      const notes = selectedUnit && formData.notes === unitNote(selectedUnit) ? '' : formData.notes;
+      const result = await leadService.submitLead({ ...formData, notes, unit });
 
       if (result.isDemo) {
         setIsDemoMode(true);

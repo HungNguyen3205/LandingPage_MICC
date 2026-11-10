@@ -165,6 +165,7 @@ export function validateLeadSubmission(payload: LeadSubmissionPayload): LeadVali
     product: sanitizeSpreadsheetText(product),
     preferredTime: sanitizeSpreadsheetText(preferredTime),
     notes: sanitizeSpreadsheetText(rawNotes),
+    unit: sanitizeSpreadsheetText((payload.unit || '').slice(0, 120)),
     pageSource: sanitizeSpreadsheetText(payload.pageSource || '/lien-he'),
     utmSource: sanitizeSpreadsheetText(payload.utmSource || ''),
     utmMedium: sanitizeSpreadsheetText(payload.utmMedium || ''),

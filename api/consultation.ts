@@ -1,11 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-
-function escapeTelegramHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+import { waitUntil } from '@vercel/functions';
+import { buildLeadMessage } from '../server/telegramMessage.js';
+import { deliverLead, postJson } from '../server/deliverLead.js';
 
 export default async function handler(
   req: IncomingMessage & { body?: any },
@@ -62,6 +58,8 @@ export default async function handler(
     const product = String(payload.product || 'Chưa xác định').trim();
     const preferredTime = String(payload.preferredTime || 'Bất kỳ lúc nào').trim();
     const notes = String(payload.notes || '').trim();
+    // Căn khách bấm chọn trong bảng giá, ví dụ "VM-03 · Vịnh Mây · Giá TTTĐ 5,781 tỷ"
+    const unit = String(payload.unit || '').trim().slice(0, 120);
     const pageSource = String(payload.pageSource || '/lien-he').trim();
     const utmSource = String(payload.utmSource || '').trim();
     const utmCampaign = String(payload.utmCampaign || '').trim();
@@ -123,7 +121,7 @@ export default async function handler(
       fullName,
       phoneForSheet,
       email || 'Chưa cung cấp',
-      product,
+      unit ? `${product} · Căn ${unit}` : product,
       preferredTime,
       notes || 'Không có ghi chú thêm',
       sourceText,
@@ -134,65 +132,33 @@ export default async function handler(
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
 
-    // 4. Gửi vào Google Sheets qua Webhook
-    let sheetSuccess = false;
-    if (webhookUrl && webhookUrl.trim() !== '') {
-      try {
-        const sheetRes = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ row: rowValues }),
-        });
-        sheetSuccess = sheetRes.ok;
-      } catch (sheetErr) {
-        console.error('[Google Sheets Error]:', sheetErr);
-      }
-    }
-
-    // 5. Gửi thông báo đến nhóm Telegram
-    let telegramSuccess = false;
+    // 4. Gửi Telegram + Google Sheet CÙNG LÚC; trả kết quả ngay khi một kênh nhận được.
+    //    Kênh chậm (Apps Script ~2-3s) chạy tiếp sau khi trả response nhờ waitUntil.
+    const channels: Record<string, () => Promise<boolean>> = {};
     if (botToken && chatId) {
-      try {
-        const safeName = escapeTelegramHtml(fullName);
-        const safePhone = escapeTelegramHtml(displayPhone);
-        const safeEmail = email ? escapeTelegramHtml(email) : '<i>Chưa cung cấp</i>';
-        const safeProduct = escapeTelegramHtml(product);
-        const safeTime = escapeTelegramHtml(preferredTime);
-        const safeSource = escapeTelegramHtml(sourceText);
-        const safeNotes = notes ? escapeTelegramHtml(notes.slice(0, 500)) : '<i>Không có ghi chú thêm</i>';
-
-        const msg =
-          `🌿 <b>ĐĂNG KÝ TƯ VẤN MỚI — ${escapeTelegramHtml(projectLabel || 'VINHOMES')}</b>\n\n` +
-          `▫️ <b>Mã đăng ký:</b> <code>${registrationCode}</code>\n` +
-          `▫️ <b>Thời gian:</b> ${now} (Giờ VN)\n` +
-          `▫️ <b>Khách hàng:</b> ${safeName}\n` +
-          `▫️ <b>Điện thoại:</b> <code>${safePhone}</code>\n` +
-          `▫️ <b>Email:</b> ${safeEmail}\n` +
-          `▫️ <b>Sản phẩm quan tâm:</b> ${safeProduct}\n` +
-          `▫️ <b>Thời gian liên hệ:</b> ${safeTime}\n` +
-          `▫️ <b>Trang nguồn:</b> <code>${safeSource}</code>\n\n` +
-          `▫️ <b>Nội dung tư vấn:</b>\n` +
-          `<blockquote>${safeNotes}</blockquote>`;
-
-        const teleRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: msg,
-            parse_mode: 'HTML',
-            disable_web_page_preview: true,
-          }),
-        });
-        telegramSuccess = teleRes.ok;
-      } catch (teleErr) {
-        console.error('[Telegram Error]:', teleErr);
-      }
+      const msg = buildLeadMessage({
+        projectLabel, registrationCode, fullName, phone: displayPhone, email,
+        product, unit, preferredTime, notes, pageSource, utmSource, utmCampaign,
+      });
+      channels.telegram = () => postJson(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        chat_id: chatId, text: msg, parse_mode: 'HTML', disable_web_page_preview: true,
+      }, 6000);
     }
+    if (webhookUrl && webhookUrl.trim() !== '') {
+      channels.sheet = () => postJson(webhookUrl, { row: rowValues }, 9000);
+    }
+
+    const delivery = deliverLead(channels);
+    waitUntil(delivery.settled.then((results) => {
+      if (Object.values(results).some((ok) => !ok)) {
+        console.error('[Consultation API] Một kênh gửi lỗi', { registrationCode, results });
+      }
+    }));
+    const delivered = await delivery.firstDelivered;
 
     // Không kênh nào nhận được lead (thiếu biến môi trường hoặc token sai):
     // báo lỗi để khách gọi hotline thay vì hiện "thành công" rồi mất lead.
-    if (!sheetSuccess && !telegramSuccess) {
+    if (!delivered) {
       console.error('[Consultation API] Lead NOT delivered', {
         registrationCode,
         hasWebhook: Boolean(webhookUrl),
@@ -215,8 +181,8 @@ export default async function handler(
       isDemo: false,
       statusCode: 'SUCCESS',
       registrationCode,
-      sheetSaved: sheetSuccess,
-      telegramSent: telegramSuccess,
+      // Kênh nào đã xác nhận tại thời điểm trả kết quả (kênh còn lại vẫn đang chạy)
+      delivered: delivery.results,
       message: 'Yêu cầu tư vấn của bạn đã được ghi nhận thành công.'
     }));
   } catch (err: unknown) {

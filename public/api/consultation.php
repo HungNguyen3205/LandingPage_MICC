@@ -29,6 +29,8 @@ $webhookUrl = $config['GOOGLE_SHEET_WEBHOOK_URL'] ?? getenv('GOOGLE_SHEET_WEBHOO
 $botToken   = $config['TELEGRAM_BOT_TOKEN'] ?? getenv('TELEGRAM_BOT_TOKEN') ?? '';
 $chatId     = $config['TELEGRAM_CHAT_ID'] ?? getenv('TELEGRAM_CHAT_ID') ?? '';
 $isDemoMode = ($config['ENABLE_DEMO_MODE'] ?? false) === true;
+// Tên dự án hiện trên Telegram & cột nguồn Sheet (phân biệt khi dùng chung bot/sheet)
+$projectLabel = trim($config['LEAD_SOURCE_LABEL'] ?? (getenv('LEAD_SOURCE_LABEL') ?: ''));
 
 // 2. Đọc payload JSON
 $rawInput = file_get_contents('php://input');
@@ -63,6 +65,8 @@ $email = trim($data['email'] ?? '');
 $product = trim($data['product'] ?? 'Chưa xác định');
 $preferredTime = trim($data['preferredTime'] ?? 'Bất kỳ lúc nào');
 $notes = trim($data['notes'] ?? '');
+// Căn khách bấm chọn trong bảng giá, ví dụ "VM-03 · Vịnh Mây · Giá TTTĐ 5,781 tỷ"
+$unit = mb_substr(trim($data['unit'] ?? ''), 0, 120);
 $pageSource = trim($data['pageSource'] ?? '/lien-he');
 $utmSource = trim($data['utmSource'] ?? '');
 $utmCampaign = trim($data['utmCampaign'] ?? '');
@@ -103,6 +107,9 @@ $sourceText = $pageSource;
 if (!empty($utmSource)) {
     $sourceText = !empty($utmCampaign) ? "$utmSource / $utmCampaign" : $utmSource;
 }
+if ($projectLabel !== '') {
+    $sourceText = "[{$projectLabel}] {$sourceText}";
+}
 
 $rowValues = [
     $registrationCode,
@@ -110,7 +117,7 @@ $rowValues = [
     $fullName,
     $formattedPhoneForSheet,
     !empty($email) ? $email : 'Chưa cung cấp',
-    $product,
+    $unit !== '' ? "{$product} · Căn {$unit}" : $product,
     $preferredTime,
     !empty($notes) ? $notes : 'Không có ghi chú thêm',
     $sourceText,
@@ -128,48 +135,62 @@ if ($isDemoMode) {
     exit;
 }
 
-// 6. Gửi dữ liệu vào Google Sheets qua Webhook
-$sheetSuccess = false;
-if (!empty($webhookUrl)) {
-    $sheetPayload = json_encode(['row' => $rowValues]);
+// 6. Hàm ghi Google Sheet (Apps Script chậm ~2-3s nên gọi SAU khi đã trả kết quả nếu được)
+$sendToSheet = function () use ($webhookUrl, $rowValues) {
+    if (empty($webhookUrl)) return false;
     $ch = curl_init($webhookUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $sheetPayload);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['row' => $rowValues]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 9);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
+    curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ($httpCode >= 200 && $httpCode < 400) {
-        $sheetSuccess = true;
-    }
-}
+    return $httpCode >= 200 && $httpCode < 400;
+};
 
-// 7. Gửi thông báo đến Telegram Group
+/** Trả JSON cho khách và đóng kết nối, script vẫn chạy tiếp phía sau. */
+$respondAndContinue = function (array $body) {
+    ignore_user_abort(true);
+    $json = json_encode($body);
+    header('Content-Length: ' . strlen($json));
+    header('Connection: close');
+    echo $json;
+    while (ob_get_level() > 0) ob_end_flush();
+    flush();
+    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+    elseif (function_exists('litespeed_finish_request')) litespeed_finish_request();
+};
+
+// 7. Gửi thông báo đến Telegram Group (nhanh, gửi trước)
 $telegramSuccess = false;
 if (!empty($botToken) && !empty($chatId)) {
-    $safeName = htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8');
-    $safePhone = htmlspecialchars($displayPhone, ENT_QUOTES, 'UTF-8');
-    $safeEmail = !empty($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : '<i>Chưa cung cấp</i>';
-    $safeProduct = htmlspecialchars($product, ENT_QUOTES, 'UTF-8');
-    $safeTime = htmlspecialchars($preferredTime, ENT_QUOTES, 'UTF-8');
-    $safeSource = htmlspecialchars($sourceText, ENT_QUOTES, 'UTF-8');
-    $safeNotes = !empty($notes) ? htmlspecialchars(mb_substr($notes, 0, 500), ENT_QUOTES, 'UTF-8') : '<i>Không có ghi chú thêm</i>';
+    // Cùng bố cục với server/telegramMessage.ts (bản Node/Vercel)
+    $e = fn($v) => htmlspecialchars(trim((string) $v), ENT_QUOTES, 'UTF-8');
+    $divider = '━━━━━━━━━━━━━━━━';
+    $phoneShown = strlen($displayPhone) === 10
+        ? substr($displayPhone, 0, 4) . ' ' . substr($displayPhone, 4, 3) . ' ' . substr($displayPhone, 7)
+        : $displayPhone;
+    $pageNames = ['/' => 'Trang chủ', '' => 'Trang chủ', '/lien-he' => 'Trang liên hệ'];
+    $sourceShown = implode(' · ', array_filter([$pageNames[$pageSource] ?? $pageSource, $utmSource, $utmCampaign], fn($x) => trim((string) $x) !== ''));
 
-    $msg = "🌿 <b>ĐĂNG KÝ TƯ VẤN MỚI — VINHOMES HẢI VÂN BAY</b>\n\n"
-         . "▫️ <b>Mã đăng ký:</b> <code>{$registrationCode}</code>\n"
-         . "▫️ <b>Thời gian:</b> {$now} (Giờ VN)\n"
-         . "▫️ <b>Khách hàng:</b> {$safeName}\n"
-         . "▫️ <b>Điện thoại:</b> <code>{$safePhone}</code>\n"
-         . "▫️ <b>Email:</b> {$safeEmail}\n"
-         . "▫️ <b>Sản phẩm quan tâm:</b> {$safeProduct}\n"
-         . "▫️ <b>Thời gian liên hệ:</b> {$safeTime}\n"
-         . "▫️ <b>Trang nguồn:</b> <code>{$safeSource}</code>\n\n"
-         . "▫️ <b>Nội dung tư vấn:</b>\n"
-         . "<blockquote>{$safeNotes}</blockquote>";
+    $lines = ['🔔 <b>KHÁCH ĐĂNG KÝ TƯ VẤN MỚI</b>'];
+    if ($projectLabel !== '') $lines[] = '🏝 ' . $e($projectLabel);
+    array_push($lines, $divider, '');
+    $lines[] = '👤 <b>' . $e($fullName) . '</b>';
+    $lines[] = '📞 <code>' . $e($phoneShown) . '</code>';
+    if ($email !== '') $lines[] = '✉️ ' . $e($email);
+    $lines[] = '';
+    $lines[] = '🏡 <b>Quan tâm:</b> ' . ($product !== '' ? $e($product) : 'Cần tư vấn thêm');
+    if ($unit !== '') $lines[] = '🔑 <b>Căn chọn:</b> ' . $e($unit);
+    $lines[] = '🕐 <b>Gọi lại:</b> ' . ($preferredTime !== '' ? $e($preferredTime) : 'Bất kỳ lúc nào');
+    if ($notes !== '') array_push($lines, '', '💬 <b>Lời nhắn:</b>', '<blockquote>' . $e(mb_substr($notes, 0, 600)) . '</blockquote>');
+    array_push($lines, '', $divider);
+    $lines[] = '<i>🆔 ' . $e($registrationCode) . '  ·  ' . date('H:i · d/m/Y') . '</i>';
+    $lines[] = '<i>🌐 ' . $e($sourceShown) . '</i>';
+    $msg = implode("\n", $lines);
 
     $teleUrl = "https://api.telegram.org/bot{$botToken}/sendMessage";
     $telePayload = json_encode([
@@ -185,7 +206,6 @@ if (!empty($botToken) && !empty($chatId)) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $telePayload);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_TIMEOUT, 6);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $teleRes = curl_exec($ch);
     $teleCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
@@ -195,13 +215,30 @@ if (!empty($botToken) && !empty($chatId)) {
     }
 }
 
-// 8. Trả về kết quả cho Frontend
-echo json_encode([
+$successBody = [
     'success' => true,
     'isDemo' => false,
     'statusCode' => 'SUCCESS',
     'registrationCode' => $registrationCode,
-    'sheetSaved' => $sheetSuccess,
-    'telegramSent' => $telegramSuccess,
     'message' => 'Yêu cầu tư vấn của bạn đã được ghi nhận thành công.'
+];
+
+// 8. Telegram đã nhận → trả kết quả ngay (~0,5s), ghi Sheet phía sau
+if ($telegramSuccess) {
+    $respondAndContinue($successBody);
+    if (!$sendToSheet()) error_log("[Consultation] Ghi Google Sheet lỗi cho {$registrationCode}");
+    exit;
+}
+
+// 9. Telegram lỗi → bắt buộc chờ Sheet; cả hai lỗi thì báo khách gọi hotline (không mất lead âm thầm)
+if ($sendToSheet()) {
+    echo json_encode($successBody);
+    exit;
+}
+error_log("[Consultation] Lead NOT delivered {$registrationCode}");
+http_response_code(502);
+echo json_encode([
+    'success' => false,
+    'statusCode' => 'DELIVERY_FAILED',
+    'message' => 'Hệ thống tạm thời chưa nhận được đăng ký. Quý khách vui lòng gọi hotline 0987 069 770 để được hỗ trợ ngay.'
 ]);

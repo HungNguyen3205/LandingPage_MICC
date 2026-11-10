@@ -102,6 +102,8 @@ export class GoogleSheetsService {
         ? `${lead.utmSource} / ${lead.utmCampaign}`
         : lead.utmSource;
     }
+    const projectLabel = (process.env.LEAD_SOURCE_LABEL || '').trim();
+    if (projectLabel) sourceText = `[${projectLabel}] ${sourceText}`;
 
     return [
       lead.registrationCode,
@@ -109,7 +111,7 @@ export class GoogleSheetsService {
       lead.fullName,
       lead.phone, // Chuỗi có dấu ' để bảo toàn số 0
       lead.email || 'Chưa cung cấp',
-      lead.product,
+      lead.unit ? `${lead.product} · Căn ${lead.unit}` : lead.product,
       lead.preferredTime,
       lead.notes || 'Không có ghi chú thêm',
       sourceText,

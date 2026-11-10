@@ -9,6 +9,8 @@ export interface LeadSubmissionPayload {
   product?: string;
   preferredTime?: string;
   notes?: string;
+  /** Căn chọn trong bảng giá, ví dụ "VM-03 · Vịnh Mây · Giá TTTĐ 5,781 tỷ" */
+  unit?: string;
   consentAgreed: boolean;
   consentVersion?: string;
   pageSource?: string;
@@ -36,6 +38,7 @@ export interface SanitizedLeadData {
   product: string;
   preferredTime: string;
   notes: string;
+  unit: string;
   pageSource: string;
   utmSource: string;
   utmMedium: string;
@@ -49,7 +52,7 @@ export interface SanitizedLeadData {
 export interface BackendLeadResponse {
   success: boolean;
   isDemo?: boolean;
-  statusCode?: 'SUCCESS' | 'DEMO_MODE' | 'VALIDATION_ERROR' | 'RATE_LIMITED' | 'SERVICE_UNAVAILABLE';
+  statusCode?: 'SUCCESS' | 'DEMO_MODE' | 'VALIDATION_ERROR' | 'RATE_LIMITED' | 'SERVICE_UNAVAILABLE' | 'DELIVERY_FAILED';
   registrationCode?: string;
   message: string;
   telegramSent?: boolean;

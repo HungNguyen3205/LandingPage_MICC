@@ -3,6 +3,7 @@ import { validateLeadSubmission } from './leadValidator';
 import { googleSheetsService } from './googleSheetsService';
 import { telegramService } from './telegramService';
 import { rateLimiter } from './rateLimiter';
+import { deliverLead } from './deliverLead';
 
 /**
  * Kiểm tra xem môi trường đã có cấu hình kết nối thật hay chưa
@@ -103,35 +104,37 @@ export async function handleLeadSubmission(
     };
   }
 
-  // 5. Lưu vào Google Sheets (Nơi lưu trữ chính)
-  const sheetsResult = await googleSheetsService.appendLead(leadData);
+  // 5. Gửi Google Sheets + Telegram CÙNG LÚC; trả kết quả ngay khi một kênh nhận được.
+  //    Server Node chạy liên tục nên kênh chậm (Apps Script ~2-3s) tự hoàn tất phía sau.
+  const delivery = deliverLead({
+    sheet: async () => {
+      const r = await googleSheetsService.appendLead(leadData);
+      if (!r.success) console.error(`[LeadSystem] Lỗi ghi Google Sheets cho mã ${leadData.registrationCode}:`, r.error);
+      return r.success;
+    },
+    telegram: async () => (await telegramService.sendNotification(leadData)).sent,
+  });
 
-  if (!sheetsResult.success) {
-    console.error(`[LeadSystem] Lỗi ghi Google Sheets cho mã ${leadData.registrationCode}:`, sheetsResult.error);
+  if (!(await delivery.firstDelivered)) {
     return {
-      status: 503,
+      status: 502,
       body: {
         success: false,
-        statusCode: 'SERVICE_UNAVAILABLE',
-        message: 'Hệ thống tiếp nhận đang bận hoặc gặp sự cố lưu trữ. Quý khách vui lòng thử lại sau ít phút hoặc liên hệ hotline.',
+        statusCode: 'DELIVERY_FAILED',
+        message: 'Hệ thống tạm thời chưa nhận được đăng ký. Quý khách vui lòng gọi hotline 0987 069 770 để được hỗ trợ ngay.',
       },
     };
   }
-
-  // 6. Gửi thông báo qua Telegram (sau khi đã lưu Sheets thành công)
-  const telegramResult = await telegramService.sendNotification(leadData);
-
-  // Cập nhật trạng thái
-  leadData.telegramStatus = telegramResult.sent
-    ? 'Đã gửi'
-    : 'Lỗi gửi Telegram (Cần gửi lại)';
+  void delivery.settled.then((results) => {
+    leadData.telegramStatus = results.telegram ? 'Đã gửi' : 'Lỗi gửi Telegram (Cần gửi lại)';
+  });
 
   const finalResponse: BackendLeadResponse = {
     success: true,
     isDemo: false,
     statusCode: 'SUCCESS',
     registrationCode: leadData.registrationCode,
-    telegramSent: telegramResult.sent,
+    telegramSent: delivery.results.telegram === true,
     message: 'Yêu cầu tư vấn của bạn đã được ghi nhận thành công.',
   };
 

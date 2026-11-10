@@ -1,4 +1,4 @@
-import { escapeTelegramHtml } from './leadValidator';
+import { buildLeadMessage } from './telegramMessage';
 import type { SanitizedLeadData } from './types';
 
 export interface TelegramSendResult {
@@ -15,30 +15,20 @@ export class TelegramService {
    * Soạn thảo tin nhắn Telegram theo định dạng HTML an toàn
    */
   public buildMessage(lead: SanitizedLeadData): string {
-    const safeName = escapeTelegramHtml(lead.fullName);
-    // Bỏ dấu ' ở đầu số điện thoại khi hiển thị tin nhắn Telegram
-    const cleanPhone = escapeTelegramHtml(lead.phone.replace(/^'/, ''));
-    const safeEmail = lead.email ? escapeTelegramHtml(lead.email) : '<i>Chưa cung cấp</i>';
-    const safeProduct = escapeTelegramHtml(lead.product);
-    const safeTime = escapeTelegramHtml(lead.preferredTime);
-    const safeSource = escapeTelegramHtml(lead.pageSource);
-    const safeNotes = lead.notes
-      ? escapeTelegramHtml(lead.notes.slice(0, 500))
-      : '<i>Không có ghi chú thêm</i>';
-
-    return (
-      `🌿 <b>ĐĂNG KÝ TƯ VẤN MỚI — VINHOMES</b>\n\n` +
-      `▫️ <b>Mã đăng ký:</b> <code>${lead.registrationCode}</code>\n` +
-      `▫️ <b>Thời gian:</b> ${lead.timestamp} (Giờ VN)\n` +
-      `▫️ <b>Khách hàng:</b> ${safeName}\n` +
-      `▫️ <b>Điện thoại:</b> <code>${cleanPhone}</code>\n` +
-      `▫️ <b>Email:</b> ${safeEmail}\n` +
-      `▫️ <b>Sản phẩm quan tâm:</b> ${safeProduct}\n` +
-      `▫️ <b>Thời gian liên hệ:</b> ${safeTime}\n` +
-      `▫️ <b>Trang nguồn:</b> <code>${safeSource}</code>\n\n` +
-      `▫️ <b>Nội dung tư vấn:</b>\n` +
-      `<blockquote>${safeNotes}</blockquote>`
-    );
+    return buildLeadMessage({
+      projectLabel: process.env.LEAD_SOURCE_LABEL,
+      registrationCode: lead.registrationCode,
+      fullName: lead.fullName,
+      phone: lead.phone,
+      email: lead.email,
+      product: lead.product,
+      unit: lead.unit,
+      preferredTime: lead.preferredTime,
+      notes: lead.notes,
+      pageSource: lead.pageSource,
+      utmSource: lead.utmSource,
+      utmCampaign: lead.utmCampaign,
+    });
   }
 
   /**

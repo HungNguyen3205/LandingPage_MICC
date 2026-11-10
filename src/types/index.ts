@@ -88,6 +88,8 @@ export interface ConsultationFormData {
   product: string;
   preferredTime: string;
   notes: string;
+  /** Căn chọn trong bảng giá, gửi riêng để Telegram/Sheet hiển thị rõ */
+  unit?: string;
   consentAgreed: boolean;
   _hp_company?: string; // Honeypot field chống spam
 }
