@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { quickContactConfig, consultationCtaConfig } from '../data/projectData';
+import { quickContactConfig } from '../data/projectData';
 import { ArrowUp, Phone, MessageCircle } from 'lucide-react';
 
 export const QuickContact: React.FC = () => {
@@ -51,7 +51,7 @@ export const QuickContact: React.FC = () => {
   return (
     <>
       {/* Floating Action Buttons (Right side) */}
-      <aside aria-label="Hỗ trợ nhanh và cuộn trang" className="fixed bottom-6 right-6 z-30 flex flex-col space-y-3 items-end">
+      <aside aria-label="Hỗ trợ nhanh và cuộn trang" className="fixed bottom-6 right-6 z-30 hidden lg:flex flex-col space-y-3 items-end">
 
         {/* Zalo Button (Only rendered if real Zalo link is provided in config) */}
         {hasZalo && (
@@ -90,32 +90,36 @@ export const QuickContact: React.FC = () => {
         )}
       </aside>
 
-      {/* Mobile Bottom Sticky CTA Bar (Only on mobile screens, disappears when form is reached) */}
+      {/* Mobile Bottom Sticky CTA Bar: call · Zalo · price list (hidden while the form is on screen) */}
       {quickContactConfig.enableMobileBottomBar && (
-        <div
-          className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-forest-dark/95 backdrop-blur-md border-t border-champagne/25 p-3 px-4 transition-transform duration-300 ease-in-out ${
+        <nav
+          aria-label="Liên hệ nhanh"
+          className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-forest-dark/95 backdrop-blur-md border-t border-champagne/25 px-3 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-in-out ${
             showMobileBottomBar ? 'translate-y-0' : 'translate-y-full'
           }`}
         >
-          <div className="flex items-center justify-between space-x-3">
-            <div className="flex flex-col text-left">
-              <span className="text-[10px] text-champagne font-mono tracking-wider uppercase">
-                VINHOMES
-              </span>
-              <span className="text-xs font-serif text-white truncate max-w-[150px]">
-                Bất động sản cao cấp
-              </span>
-            </div>
-
+          <div className="flex items-stretch gap-2">
+            {hasPhone && (
+              <a href={`tel:${quickContactConfig.phoneNumber}`} className="flex w-16 flex-col items-center justify-center gap-0.5 rounded-xl border border-champagne/30 text-champagne active:bg-white/10">
+                <Phone className="h-5 w-5" aria-hidden="true" />
+                <span className="text-[11px] font-medium">Gọi</span>
+              </a>
+            )}
+            {hasZalo && (
+              <a href={quickContactConfig.zaloUrl} target="_blank" rel="noopener noreferrer" className="flex w-16 flex-col items-center justify-center gap-0.5 rounded-xl bg-[#0068FF] text-white active:opacity-90">
+                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                <span className="text-[11px] font-medium">Zalo</span>
+              </a>
+            )}
             <button
               type="button"
               onClick={scrollToForm}
-              className="flex-grow max-w-[200px] py-2.5 px-4 rounded-luxury bg-champagne hover:bg-champagne-hover text-forest-dark text-xs font-semibold tracking-wide shadow-gold transition-colors text-center"
+              className="cta-shine relative flex-1 overflow-hidden whitespace-nowrap rounded-xl bg-champagne px-3 py-3 text-[15px] font-semibold text-forest-dark shadow-gold active:bg-champagne-hover"
             >
-              {consultationCtaConfig.label}
+              Nhận bảng giá ngay
             </button>
           </div>
-        </div>
+        </nav>
       )}
     </>
   );

@@ -136,7 +136,7 @@ export const Header: React.FC = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8" aria-label="Điều hướng chính">
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 whitespace-nowrap" aria-label="Điều hướng chính">
               {navigationItems.map((item) => {
                 const isActive = item.href === '/lien-he' && location.pathname === '/lien-he';
 
@@ -173,7 +173,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleNavClick(consultationCtaConfig.href)}
-                className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-luxury bg-champagne hover:bg-champagne-hover text-forest-dark text-[13px] sm:text-[14px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne active:scale-[0.98]"
+                className="hidden sm:inline-flex whitespace-nowrap items-center justify-center px-5 py-2.5 rounded-luxury bg-champagne hover:bg-champagne-hover text-forest-dark text-[13px] sm:text-[14px] font-semibold tracking-wide transition-all duration-200 shadow-sm hover:shadow-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne active:scale-[0.98]"
               >
                 <span>{consultationCtaConfig.label}</span>
                 <ArrowUpRight className="ml-1.5 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -183,7 +183,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleNavClick(consultationCtaConfig.href)}
-                className="sm:hidden px-3.5 py-1.5 rounded-luxury bg-champagne text-forest-dark text-xs font-semibold tracking-wide shadow-sm"
+                className="sm:hidden min-h-[40px] px-4 py-2 rounded-luxury bg-champagne text-forest-dark text-xs font-semibold tracking-wide shadow-sm"
               >
                 Tư vấn
               </button>
@@ -192,7 +192,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`lg:hidden p-2 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne ${
+                className={`lg:hidden p-2.5 -mr-2 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne ${
                   showSolidHeader ? 'text-forest hover:bg-forest/5' : 'text-white hover:bg-white/10'
                 }`}
                 aria-label={isMobileMenuOpen ? 'Đóng menu' : 'Mở menu điều hướng'}

@@ -113,7 +113,7 @@ class ConsultationService {
         return {
           success: false,
           statusCode: 'SERVICE_UNAVAILABLE',
-          message: 'Không thể ghi nhận yêu cầu vào lúc này. Quý khách vui lòng thử lại sau hoặc liên hệ hotline.',
+          message: result.message || 'Không thể ghi nhận yêu cầu vào lúc này. Quý khách vui lòng thử lại sau hoặc liên hệ hotline.',
         };
       }
 

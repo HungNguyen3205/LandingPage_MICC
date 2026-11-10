@@ -111,6 +111,11 @@ export default async function handler(
     if (utmSource) {
       sourceText = utmCampaign ? `${utmSource} / ${utmCampaign}` : utmSource;
     }
+    // Tên dự án gắn vào lead: phân biệt khi nhiều landing page dùng chung bot & sheet
+    const projectLabel = (process.env.LEAD_SOURCE_LABEL || '').trim();
+    if (projectLabel) {
+      sourceText = `[${projectLabel}] ${sourceText}`;
+    }
 
     const rowValues = [
       registrationCode,
@@ -157,7 +162,7 @@ export default async function handler(
         const safeNotes = notes ? escapeTelegramHtml(notes.slice(0, 500)) : '<i>Không có ghi chú thêm</i>';
 
         const msg =
-          `🌿 <b>ĐĂNG KÝ TƯ VẤN MỚI — VINHOMES</b>\n\n` +
+          `🌿 <b>ĐĂNG KÝ TƯ VẤN MỚI — ${escapeTelegramHtml(projectLabel || 'VINHOMES')}</b>\n\n` +
           `▫️ <b>Mã đăng ký:</b> <code>${registrationCode}</code>\n` +
           `▫️ <b>Thời gian:</b> ${now} (Giờ VN)\n` +
           `▫️ <b>Khách hàng:</b> ${safeName}\n` +
@@ -183,6 +188,24 @@ export default async function handler(
       } catch (teleErr) {
         console.error('[Telegram Error]:', teleErr);
       }
+    }
+
+    // Không kênh nào nhận được lead (thiếu biến môi trường hoặc token sai):
+    // báo lỗi để khách gọi hotline thay vì hiện "thành công" rồi mất lead.
+    if (!sheetSuccess && !telegramSuccess) {
+      console.error('[Consultation API] Lead NOT delivered', {
+        registrationCode,
+        hasWebhook: Boolean(webhookUrl),
+        hasTelegram: Boolean(botToken && chatId),
+      });
+      res.statusCode = 502;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({
+        success: false,
+        statusCode: 'DELIVERY_FAILED',
+        message: 'Hệ thống tạm thời chưa nhận được đăng ký. Quý khách vui lòng gọi hotline 0987 069 770 để được hỗ trợ ngay.',
+      }));
+      return;
     }
 
     res.statusCode = 200;

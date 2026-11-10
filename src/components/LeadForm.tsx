@@ -1,19 +1,28 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import type { ConsultationFormData } from '../types';
+import type { ConsultationFormData, SelectedUnit } from '../types';
+import { productsData } from '../data/projectData';
 import { leadService } from '../services/consultationService';
-import { Send, AlertCircle, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Send, AlertCircle, ArrowRight, Loader2, Sparkles, X, Home } from 'lucide-react';
+
+const unitNote = (u: SelectedUnit) =>
+  `Tôi quan tâm căn ${u.code} – ${u.type} ${u.zone} (${u.priceLabel} ${u.price} tỷ). Nhờ chuyên viên tư vấn tình trạng căn, chính sách áp dụng và sắp xếp lịch tham quan.`;
 
 interface LeadFormProps {
   preSelectedProduct?: string;
   variant?: 'contact-page' | 'home-dark';
   onSuccessRedirect?: boolean;
+  /** Căn khách vừa bấm trong bảng giá: điền sẵn sản phẩm + nội dung tư vấn. */
+  selectedUnit?: SelectedUnit | null;
+  onClearUnit?: () => void;
 }
 
 export const LeadForm: React.FC<LeadFormProps> = ({
   preSelectedProduct = 'Cần tư vấn thêm',
   variant = 'contact-page',
   onSuccessRedirect = true,
+  selectedUnit = null,
+  onClearUnit,
 }) => {
   const navigate = useNavigate();
   const [isDemoMode, setIsDemoMode] = useState<boolean>(
@@ -38,11 +47,31 @@ export const LeadForm: React.FC<LeadFormProps> = ({
     text: string;
   } | null>(null);
 
+  // Sync the unit picked from the price list (same render-time pattern as product)
+  const [prevUnit, setPrevUnit] = useState<SelectedUnit | null>(null);
+  if (selectedUnit !== prevUnit) {
+    setPrevUnit(selectedUnit);
+    setFormData((prev) => {
+      if (selectedUnit) {
+        return { ...prev, product: selectedUnit.productName, notes: unitNote(selectedUnit) };
+      }
+      // Unit cleared: drop the auto-filled note only if the visitor did not edit it
+      return prevUnit && prev.notes === unitNote(prevUnit) ? { ...prev, notes: '' } : prev;
+    });
+  }
+
   // Focus refs for the first invalid input
   const fullNameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const consentRef = useRef<HTMLInputElement>(null);
+
+  // After jumping down from the price list, put the cursor in the name field
+  useEffect(() => {
+    if (!selectedUnit) return;
+    const timer = window.setTimeout(() => fullNameRef.current?.focus({ preventScroll: true }), 900);
+    return () => window.clearTimeout(timer);
+  }, [selectedUnit]);
 
   // Sync prop changes during render without useEffect
   const [prevProduct, setPrevProduct] = useState(preSelectedProduct);
@@ -244,6 +273,26 @@ export const LeadForm: React.FC<LeadFormProps> = ({
           />
         </div>
 
+        {selectedUnit && (
+          <div className="flex items-center gap-3 rounded-xl border border-champagne/50 bg-gradient-to-r from-[#fbf6ec] to-[#f5ecdb] p-3 sm:p-4" role="status">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest-dark text-champagne">
+              <Home aria-hidden="true" className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-champagne-hover">Căn bạn đang quan tâm</p>
+              <p className="truncate font-serif text-lg text-forest-dark">
+                {selectedUnit.code} <span className="text-sm text-ink-muted">· {selectedUnit.type} {selectedUnit.zone}</span>
+              </p>
+              <p className="text-xs text-ink-muted">{selectedUnit.priceLabel}: <strong className="text-forest">{selectedUnit.price} tỷ</strong></p>
+            </div>
+            {onClearUnit && (
+              <button type="button" onClick={onClearUnit} aria-label="Bỏ chọn căn" className="rounded-full p-2 text-ink-muted transition hover:bg-forest/10 hover:text-forest">
+                <X aria-hidden="true" className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Row 1: Họ và tên * & Số điện thoại * */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {/* Full Name */}
@@ -362,10 +411,9 @@ export const LeadForm: React.FC<LeadFormProps> = ({
               className="w-full px-4 py-3 rounded bg-white border border-forest/15 text-sm text-forest focus:outline-none focus:ring-2 focus:ring-champagne transition-colors cursor-pointer"
             >
               <option value="Cần tư vấn thêm">Cần tư vấn thêm / Tìm hiểu chung</option>
-              <option value="Biệt Thự Đơn Lập (Lâm Phong)">Biệt Thự Đơn Lập (Lâm Phong - Từ 18,1 tỷ)</option>
-              <option value="Biệt Thự Song Lập (Bạch Vân)">Biệt Thự Song Lập (Bạch Vân - Từ 9,1 tỷ)</option>
-              <option value="Nhà Phố Liền Kề (Hồng Châu & Ánh Ngọc)">Nhà Phố Liền Kề (Hồng Châu & Ánh Ngọc - Từ 7,3 tỷ)</option>
-              <option value="Shophouse & Căn Hộ">Shophouse & Căn Hộ Nghỉ Dưỡng</option>
+              {productsData.map((p) => (
+                <option key={p.id} value={p.name}>{p.name} ({p.priceNote})</option>
+              ))}
             </select>
           </div>
         </div>
@@ -430,7 +478,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({
               checked={formData.consentAgreed}
               onChange={handleChange}
               disabled={isSubmitting}
-              className="mt-1 w-4 h-4 rounded border-forest/30 text-forest focus:ring-champagne cursor-pointer"
+              className="mt-0.5 w-5 h-5 shrink-0 rounded border-forest/30 text-forest focus:ring-champagne cursor-pointer"
             />
             <span className="text-xs text-ink-muted leading-relaxed group-hover:text-forest transition-colors">
               Tôi đồng ý để đơn vị tư vấn sử dụng thông tin trên nhằm liên hệ về nhu cầu đã đăng ký.{' '}

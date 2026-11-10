@@ -13,7 +13,7 @@ export const Gallery: React.FC = () => {
   };
 
   return (
-    <section id="thu-vien" className="py-20 lg:py-28 bg-sand relative overflow-hidden">
+    <section id="thu-vien" className="py-14 sm:py-20 lg:py-28 bg-sand relative overflow-hidden">
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
@@ -38,7 +38,7 @@ export const Gallery: React.FC = () => {
         </div>
 
         {/* Asymmetrical Gallery Grid: 1 large anchor image + 4 complementary images */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
           {galleryData.map((item, index) => {
             const isFirst = index === 0;
             return (
@@ -56,7 +56,7 @@ export const Gallery: React.FC = () => {
                 aria-label={`Xem ảnh lớn: ${item.title}`}
                 className={`relative rounded-luxury overflow-hidden group cursor-pointer border border-forest/10 shadow-subtle hover:shadow-card transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne ${
                   isFirst
-                    ? 'md:col-span-2 md:row-span-2 aspect-[4/3] md:aspect-auto'
+                    ? 'col-span-2 md:row-span-2 aspect-[4/3] md:aspect-auto'
                     : 'aspect-[4/3]'
                 }`}
               >
@@ -88,7 +88,7 @@ export const Gallery: React.FC = () => {
 
                 {/* Tiny corner index marker */}
                 <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-black/40 text-sand text-[10px] font-mono tracking-widest backdrop-blur-sm">
-                  0{index + 1}
+                  {String(index + 1).padStart(2, '0')}
                 </span>
               </div>
             );

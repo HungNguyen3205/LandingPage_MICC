@@ -3,7 +3,7 @@ import { Compass, Waves, Building2, Palmtree, MapPin } from 'lucide-react';
 
 export const Location: React.FC = () => {
   return (
-    <section id="vi-tri" className="py-20 lg:py-28 bg-[#F4F1E8] relative overflow-hidden">
+    <section id="vi-tri" className="py-14 sm:py-20 lg:py-28 bg-[#F4F1E8] relative overflow-hidden">
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
@@ -155,7 +155,7 @@ export const Location: React.FC = () => {
                   <div className="p-3.5 rounded bg-champagne/15 border border-champagne/40 flex flex-col items-center shadow-gold">
                     <span className="text-champagne font-mono text-xs font-bold mb-1">VINHOMES HẢI VÂN BAY</span>
                     <span className="font-serif text-base text-white font-semibold">Tâm Điểm Nghỉ Dưỡng</span>
-                    <span className="text-[11px] text-champagne-light/90 mt-1">Biệt thự • Liền kề • Shophouse</span>
+                    <span className="text-[11px] text-champagne-light/90 mt-1">Biệt thự • Nhà liền kề</span>
                   </div>
 
                   {/* Axis 2 */}

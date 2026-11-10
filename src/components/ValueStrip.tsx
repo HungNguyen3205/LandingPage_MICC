@@ -1,12 +1,14 @@
 import React from 'react';
 import { valueItems } from '../data/projectData';
-import { Sparkles, Trees, Waves, Compass } from 'lucide-react';
+import { Sparkles, Trees, Waves, Compass, Droplets, FerrisWheel } from 'lucide-react';
 
 const iconMap = {
   Sparkles: Sparkles,
   Trees: Trees,
   Waves: Waves,
   Compass: Compass,
+  Droplets: Droplets,
+  FerrisWheel: FerrisWheel,
 };
 
 export const ValueStrip: React.FC = () => {

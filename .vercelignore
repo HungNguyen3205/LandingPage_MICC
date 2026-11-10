@@ -1,0 +1,11 @@
+# Không upload lên Vercel
+# - Khóa thật: Vercel đọc từ Environment Variables, không cần file .env
+.env
+.env.*
+!.env.example
+# - Backend PHP chỉ dành cho hosting cPanel/AZDIGI. Trên Vercel các file .php
+#   bị trả về như file tĩnh => config.local.php sẽ lộ token nếu được upload.
+public/api/*.php
+# - Bản build và file tạm trên máy
+dist
+*.zip

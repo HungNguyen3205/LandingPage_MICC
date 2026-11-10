@@ -257,7 +257,7 @@ export const PrivacyPolicyPage: React.FC = () => {
                 <li><strong className="text-ink">Họ và tên</strong> (trường bắt buộc): Phục vụ việc xưng hô và cá nhân hóa quá trình tư vấn.</li>
                 <li><strong className="text-ink">Số điện thoại</strong> (trường bắt buộc): Kênh liên lạc trực tiếp để gửi tài liệu và phản hồi nhu cầu.</li>
                 <li><strong className="text-ink">Địa chỉ email</strong> (không bắt buộc): Kênh nhận bộ hồ sơ thiết kế hoặc mặt bằng dự án qua thư điện tử.</li>
-                <li><strong className="text-ink">Sản phẩm quan tâm</strong>: Lựa chọn trong danh mục (Cần tư vấn thêm / Biệt Thự Đơn Lập Lâm Phong / Biệt Thự Song Lập Bạch Vân / Nhà Phố Liền Kề Hồng Châu & Ánh Ngọc / Shophouse & Căn Hộ).</li>
+                <li><strong className="text-ink">Sản phẩm quan tâm</strong>: Lựa chọn trong danh mục (Cần tư vấn thêm / Biệt Thự Đơn Lập Vịnh Mây / Liền Kề Vịnh Mây / Liền Kề Bạch Vân / Liền Kề Đảo Ngọc), kèm mã căn nếu quý khách chọn từ bảng giá.</li>
                 <li><strong className="text-ink">Thời gian liên hệ mong muốn</strong>: Khung giờ thuận tiện do người dùng lựa chọn (Bất kỳ / Sáng / Chiều / Tối).</li>
                 <li><strong className="text-ink">Nội dung cần tư vấn</strong>: Ghi chú nhu cầu chi tiết (giới hạn tối đa 1.000 ký tự).</li>
                 <li><strong className="text-ink">Dữ liệu kỹ thuật phục vụ ghi nhận</strong>: Thời điểm gửi biểu mẫu (timestamp), trang nguồn gửi đăng ký và trạng thái xác nhận đồng ý với điều khoản sử dụng khi hệ thống thực tế có lưu trữ.</li>

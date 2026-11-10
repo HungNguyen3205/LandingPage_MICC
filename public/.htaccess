@@ -14,7 +14,7 @@
 </IfModule>
 
 # 3. Chặn truy cập trực tiếp file cấu hình nhạy cảm
-<FilesMatch "^\.env|\.git|\.md$|config\.php$">
+<FilesMatch "^\.env|\.git|\.md$|config(\.local)?\.php$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

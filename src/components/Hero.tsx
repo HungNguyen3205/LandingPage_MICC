@@ -1,51 +1,109 @@
-import { ArrowUpRight } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { Waves, Trees, FerrisWheel, ChevronDown, type LucideIcon } from 'lucide-react';
 
-const featuredZones = [
-  { id: 'vinh-may', name: 'Vịnh Mây', image: '/images/trien-nui.webp', position: 'center 72%' },
-  { id: 'bach-van', name: 'Bạch Vân', image: '/images/bach-van.webp', position: 'center 58%' },
-  { id: 'dao-ngoc', name: 'Đảo Ngọc', image: '/images/dao-ngoc.webp', position: 'center 60%' },
+type Pillar = { title: string; text: string; icon: LucideIcon };
+
+const pillars: Pillar[] = [
+  { title: 'Biển & vịnh', text: 'Bãi biển cát mịn, hoàng hôn trên vịnh và cáp treo ngắm trọn đường bờ biển.', icon: Waves },
+  { title: 'Suối & rừng', text: 'Đường mòn phiêu lưu, máng trượt xuyên rừng và suối mát giữa thiên nhiên.', icon: Trees },
+  { title: 'Vui chơi giải trí', text: 'Công viên chủ đề, lễ hội đêm và khu vui chơi cho trẻ em mỗi cuối tuần.', icon: FerrisWheel },
 ];
 
-export const Hero = () => (
-  <section className="relative isolate flex min-h-[min(920px,100svh)] flex-col items-center justify-end overflow-hidden bg-forest-dark px-4 pb-12 pt-36 text-center text-white sm:pb-16">
-    <svg aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full" viewBox="0 398 1280 740" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <clipPath id="hilltop-foreground">
-          <path d="M0 532L60 487 178 499 209 523 310 526 341 552 400 557 438 583 506 590 547 611 600 614 654 650 710 647 766 656 820 659 879 674 927 689 966 711 1006 754 1050 768 1104 790 1150 797 1194 820 1280 839V1280H0Z" />
-        </clipPath>
-        <linearGradient id="hilltop-type" x2="0%" y2="100%">
-          <stop stopColor="#fff" />
-          <stop offset="1" stopColor="#dceef1" />
-        </linearGradient>
-      </defs>
-      <image href="/images/trien-nui.webp" width="1280" height="1280" />
-      <text className="hidden sm:block" x="738" y="567" textAnchor="middle" textLength="715" lengthAdjust="spacingAndGlyphs" fill="url(#hilltop-type)" fontFamily="Arial, sans-serif" fontSize="132" fontWeight="900">VỊNH MÂY</text>
-      <text className="sm:hidden" x="640" y="571" textAnchor="middle" textLength="278" lengthAdjust="spacingAndGlyphs" fill="url(#hilltop-type)" fontFamily="Arial, sans-serif" fontSize="64" fontWeight="900">VỊNH MÂY</text>
-      <image href="/images/trien-nui.webp" width="1280" height="1280" clipPath="url(#hilltop-foreground)" />
-      <rect x="0" y="398" width="1280" height="740" fill="#092c3e" opacity=".18" />
-    </svg>
-    <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-dark via-forest-dark/25 to-transparent" />
-    <div className="relative mx-auto w-full max-w-5xl">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[.24em] text-champagne-light sm:text-sm">MICC Group · NEXME</p>
-      <h1 className="font-serif text-4xl sm:text-6xl">Vịnh Mây <span className="block italic text-champagne-light sm:inline">Hilltop Collection</span></h1>
-      <p className="mx-auto mt-4 max-w-xl text-sm text-white/90 sm:text-base">Khám phá không gian sống giữa triền núi và vịnh biển tại Vinhomes Hải Vân Bay.</p>
-      <a href="#bang-gia" className="mt-7 inline-flex rounded-full bg-champagne px-7 py-3 font-semibold text-forest-dark hover:bg-champagne-light">Xem bảng giá & chính sách</a>
-      <nav aria-label="Khám phá phân khu" className="mt-8 grid grid-cols-3 gap-2 sm:gap-4">
-        {featuredZones.map((zone, index) => (
-          <a key={zone.id} href={`#phan-khu-${zone.id}`} aria-label={`Xem bảng giá và chính sách ${zone.name}`} className="group relative isolate flex min-h-28 items-end overflow-hidden rounded-xl border border-white/30 bg-forest-dark text-left shadow-xl shadow-black/30 transition hover:-translate-y-1 hover:border-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne motion-reduce:transform-none motion-reduce:transition-none sm:min-h-40">
-            <img src={zone.image} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover transition duration-500 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none" style={{ objectPosition: zone.position }} />
-            <span aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/35 to-transparent" />
-            <span className="flex w-full items-end justify-between gap-1 px-2 pb-3 sm:px-4 sm:pb-4">
+const TITLE_FONT = "'Playfair Display', 'Noto Serif', Georgia, serif";
+const SCRIPT_FONT = "'Great Vibes', 'Dancing Script', cursive";
+
+/**
+ * Layered hero: background photo → flowing title → the same photo with only the
+ * foreground (islands, forest, town, cable wires) kept via an alpha mask, so the
+ * title sits on the sea behind the scenery. On scroll the title drifts slower than
+ * the scene and sinks behind the coastline.
+ */
+export const Hero = () => {
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      el.style.setProperty('--hero-y', String(Math.min(window.scrollY, 1200)));
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(frame); };
+  }, []);
+
+  return (
+    <section ref={ref} className="relative isolate flex min-h-[max(min(980px,100svh),52vw)] flex-col items-center justify-end overflow-hidden bg-forest-dark px-4 pb-10 pt-32 text-center text-white sm:pb-12">
+      <svg aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMin slice">
+        <defs>
+          <linearGradient id="lv-type" x1="0" y1="0" x2="1" y2=".25">
+            <stop offset="0" stopColor="#fffdf8" />
+            <stop offset=".42" stopColor="#fffdf8" />
+            <stop offset=".5" stopColor="#f6dfb4" />
+            <stop offset=".58" stopColor="#fffdf8" />
+            <stop offset="1" stopColor="#eef3f2" />
+            <animateTransform attributeName="gradientTransform" type="translate" values="-1 0; 1 0; 1 0" keyTimes="0; .45; 1" dur="7s" begin="1.6s" repeatCount="indefinite" />
+          </linearGradient>
+          <filter id="lv-glow" x="-10%" y="-30%" width="120%" height="160%">
+            <feDropShadow dx="0" dy="8" stdDeviation="14" floodColor="#081f2b" floodOpacity=".45" />
+          </filter>
+          <filter id="lv-script-shadow" x="-10%" y="-40%" width="120%" height="180%">
+            <feDropShadow dx="0" dy="3" stdDeviation="5" floodColor="#000" floodOpacity=".7" />
+          </filter>
+        </defs>
+
+        <g className="hero-scene">
+          <image href="/images/lang-van/hero-bg.webp" width="1536" height="1024" />
+
+          <g className="hero-parallax">
+            <g className="hero-title" fill="url(#lv-type)" filter="url(#lv-glow)" fontFamily={TITLE_FONT} fontStyle="italic" fontWeight="900" textAnchor="middle">
+              <text className="hidden sm:block" x="790" y="292" fontSize="222" textLength="730" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
+              <text className="sm:hidden" x="768" y="292" fontSize="138" textLength="430" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
+            </g>
+          </g>
+
+          <image href="/images/lang-van/hero-fg.webp" width="1536" height="1024" />
+
+          <g className="hero-script" filter="url(#lv-script-shadow)" fontFamily={SCRIPT_FONT} fill="#f3d9a6" stroke="#f3d9a6" strokeWidth="1.2" textAnchor="middle">
+            <text className="hidden sm:block" x="900" y="352" fontSize="84" transform="rotate(-4 900 352)">Sống như một kỳ nghỉ</text>
+            <text className="sm:hidden" x="790" y="372" fontSize="60" transform="rotate(-5 790 372)">Sống như một kỳ nghỉ</text>
+          </g>
+        </g>
+      </svg>
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-dark via-forest-dark/30 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/40 to-transparent" />
+
+      <div className="hero-copy relative mx-auto w-full max-w-6xl">
+        <h1 className="font-serif text-[28px] leading-tight drop-shadow-lg sm:text-5xl">
+          Biển xanh, suối mát, <span className="italic text-champagne-light">rừng nhiệt đới</span>
+        </h1>
+        <p className="mx-auto mt-3 max-w-2xl text-[13px] leading-relaxed text-white/90 sm:text-base">
+          Sáng tắm biển, chiều đi cáp treo xuyên rừng, tối dạo lễ hội ven hồ. Ngôi nhà thứ hai của gia đình bạn, chỉ hơn 1 giờ bay từ Hà Nội.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="#lien-he" className="cta-shine relative inline-flex overflow-hidden rounded-full bg-champagne px-5 py-2.5 text-sm font-semibold text-forest-dark shadow-gold hover:bg-champagne-light sm:px-8 sm:py-3.5 sm:text-base">Nhận bảng giá & lịch tham quan</a>
+          <a href="#trai-nghiem" className="inline-flex rounded-full border border-white/50 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/20 sm:px-8 sm:py-3.5 sm:text-base">Khám phá Làng Vân</a>
+        </div>
+
+        <nav aria-label="Thế mạnh Làng Vân" className="mt-6 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-5 sm:text-left">
+          {pillars.map(({ title, text, icon: Icon }) => (
+            <a key={title} href="#trai-nghiem" className="group flex flex-col items-center gap-2 rounded-2xl border border-white/15 bg-black/45 px-2 py-3 shadow-xl shadow-black/30 backdrop-blur-md transition hover:-translate-y-1 hover:border-champagne/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne motion-reduce:transform-none sm:flex-row sm:gap-4 sm:p-5">
+              <Icon aria-hidden="true" className="h-7 w-7 shrink-0 text-champagne transition group-hover:scale-110 sm:h-11 sm:w-11" strokeWidth={1.6} />
               <span>
-                <span className="mb-1 hidden text-[10px] font-semibold uppercase tracking-widest text-champagne-light sm:block">Phân khu 0{index + 1}</span>
-                <span className="block font-serif text-sm font-semibold leading-tight sm:text-2xl">{zone.name}</span>
+                <span className="block text-[11px] font-bold uppercase leading-tight tracking-[.08em] sm:text-base sm:tracking-[.14em]">{title}</span>
+                <span className="mt-1 hidden text-sm leading-snug text-white/80 sm:block">{text}</span>
               </span>
-              <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-champagne-light sm:h-5 sm:w-5" />
-            </span>
-          </a>
-        ))}
-      </nav>
-      <p className="mt-4 text-xs text-white/75">Hình ảnh minh họa</p>
-    </div>
-  </section>
-);
+            </a>
+          ))}
+        </nav>
+        <a href="#trai-nghiem" aria-label="Cuộn xuống" className="mx-auto mt-5 flex w-fit flex-col items-center text-[11px] uppercase tracking-[.25em] text-white/70 hover:text-champagne-light">
+          Hình ảnh minh họa
+          <ChevronDown aria-hidden="true" className="mt-1 h-5 w-5 animate-bounce motion-reduce:animate-none" />
+        </a>
+      </div>
+    </section>
+  );
+};

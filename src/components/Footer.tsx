@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { projectMeta, navigationItems, consultationCtaConfig } from '../data/projectData';
+import { projectMeta, navigationItems, consultationCtaConfig, quickContactConfig } from '../data/projectData';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -124,18 +124,18 @@ export const Footer: React.FC = () => {
                 <span className="text-sand/50 block text-[11px] uppercase tracking-wider mb-0.5">
                   Văn phòng giới thiệu & Ban quản lý dự án
                 </span>
-                <span className="text-sand/90 font-mono text-xs">
+                <a href={`tel:${quickContactConfig.phoneNumber}`} className="inline-block py-1 text-sand/90 font-mono text-sm hover:text-champagne">
                   {projectMeta.contactStatusNotice}
-                </span>
+                </a>
               </div>
 
               <div>
                 <span className="text-sand/50 block text-[11px] uppercase tracking-wider mb-0.5">
                   Đường dây tư vấn chính thức
                 </span>
-                <span className="text-sand/90 font-mono text-xs">
+                <a href={`tel:${quickContactConfig.phoneNumber}`} className="inline-block py-1 text-sand/90 font-mono text-sm hover:text-champagne">
                   {projectMeta.contactStatusNotice}
-                </span>
+                </a>
               </div>
 
               <div className="pt-2">

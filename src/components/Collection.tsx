@@ -230,27 +230,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
                   Quy mô
                 </span>
                 <span className="text-xs font-semibold text-white mt-0.5 truncate">
-                  {product.specs?.floors || '3 tầng'}
+                  {product.specs?.floors}
                 </span>
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded p-2 flex flex-col">
                 <span className="text-[10px] text-sand/60 font-mono uppercase flex items-center space-x-1">
                   <Home className="w-2.5 h-2.5 text-champagne mr-1" />
-                  Công năng
+                  Hướng
                 </span>
                 <span className="text-xs font-semibold text-white mt-0.5 truncate">
-                  {product.specs?.bedrooms || '3-4 Phòng ngủ'}
+                  {product.specs?.view}
                 </span>
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded p-2 flex flex-col">
                 <span className="text-[10px] text-sand/60 font-mono uppercase flex items-center space-x-1">
                   <ShieldCheck className="w-2.5 h-2.5 text-champagne mr-1" />
-                  Pháp lý
+                  Hiện trạng
                 </span>
                 <span className="text-xs font-semibold text-white mt-0.5 truncate">
-                  {product.specs?.legal || 'Sổ hồng lâu dài'}
+                  {product.specs?.handover}
                 </span>
               </div>
             </div>
@@ -259,7 +259,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
             <div className="bg-champagne/10 border border-champagne/30 rounded p-2.5 sm:p-3 mb-2">
               <div className="flex items-center space-x-1.5 text-champagne text-[10px] font-mono tracking-wider uppercase mb-1.5 font-semibold">
                 <Sparkles className="w-3 h-3 text-champagne shrink-0" />
-                <span>CHÍNH SÁCH BÁN HÀNG ĐẶC QUYỀN</span>
+                <span>CHÍNH SÁCH TỪ 05/10/2026</span>
               </div>
               <ul className="space-y-1 text-[11px] text-sand/90 font-light">
                 {product.specs?.policies.map((policy) => (
@@ -270,7 +270,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
                 )) || (
                   <li className="flex items-start space-x-1.5">
                     <Check className="w-3 h-3 text-champagne shrink-0 mt-0.5" />
-                    <span>Hỗ trợ lãi suất 0% 24 tháng, vay 80%</span>
+                    <span>Liên hệ để nhận chính sách mới nhất</span>
                   </li>
                 )}
               </ul>
@@ -326,7 +326,7 @@ export const Collection: React.FC<CollectionProps> = ({ onSelectProduct }) => {
   };
 
   return (
-    <section id="bo-suu-tap" className="py-20 lg:py-28 bg-[#F4F1E8] relative">
+    <section id="bo-suu-tap" className="py-14 sm:py-20 lg:py-28 bg-[#F4F1E8] relative">
       <span id="san-pham" className="sr-only" aria-hidden="true" />
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -357,7 +357,7 @@ export const Collection: React.FC<CollectionProps> = ({ onSelectProduct }) => {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center space-x-2 sm:space-x-3 mb-10 overflow-x-auto pb-2 scrollbar-none" role="tablist" aria-label="Bộ lọc dòng sản phẩm">
+        <div className="flex items-center space-x-2 sm:space-x-3 mb-6 sm:mb-10 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="Bộ lọc dòng sản phẩm">
           <button
             type="button"
             role="tab"
@@ -400,6 +400,7 @@ export const Collection: React.FC<CollectionProps> = ({ onSelectProduct }) => {
             Nhà liền kề ({productsData.filter((p) => p.category === 'townhouse').length})
           </button>
 
+          {productsData.some((p) => p.category === 'shophouse') && (
           <button
             type="button"
             role="tab"
@@ -413,16 +414,16 @@ export const Collection: React.FC<CollectionProps> = ({ onSelectProduct }) => {
           >
             Thương mại & Căn hộ ({productsData.filter((p) => p.category === 'shophouse').length})
           </button>
+          )}
         </div>
 
         {/* Product Cards Grid with 3D Flip System */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+<p className="mb-3 flex items-center gap-2 text-xs font-medium text-champagne-hover md:hidden"><span aria-hidden="true" className="h-px w-6 bg-current" />Vuốt ngang để xem thêm →</p>
+        <div className="snap-row -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4 items-stretch">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onSelect={handleSelectProduct}
-            />
+            <div key={product.id} className="w-[84vw] max-w-sm shrink-0 snap-center md:w-auto md:max-w-none">
+              <ProductCard product={product} onSelect={handleSelectProduct} />
+            </div>
           ))}
         </div>
 

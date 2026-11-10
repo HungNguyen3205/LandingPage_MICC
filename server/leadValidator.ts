@@ -2,13 +2,10 @@ import type { LeadSubmissionPayload, LeadValidationResult, SanitizedLeadData } f
 
 export const VALID_PRODUCTS = [
   'Cần tư vấn thêm',
-  'Biệt Thự Đơn Lập (Lâm Phong)',
-  'Biệt Thự Song Lập (Bạch Vân)',
-  'Nhà Phố Liền Kề (Hồng Châu & Ánh Ngọc)',
-  'Shophouse & Căn Hộ',
-  'Ocean Villa',
-  'Garden Residence',
-  'Sky Collection',
+  'Biệt Thự Đơn Lập Vịnh Mây',
+  'Liền Kề Vịnh Mây',
+  'Liền Kề Bạch Vân',
+  'Liền Kề Đảo Ngọc',
 ];
 
 export const VALID_PREFERRED_TIMES = [

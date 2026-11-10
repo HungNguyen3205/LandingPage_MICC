@@ -106,3 +106,79 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ---------- Hero: layered "Làng Vân" ---------- */
+.hero-scene {
+  transform-box: view-box;
+  transform-origin: 50% 28%;
+  animation: hero-zoom 16s cubic-bezier(.16, .7, .3, 1) both;
+}
+.hero-parallax {
+  transform: translateY(calc(var(--hero-y, 0) * .32px));
+}
+.hero-title {
+  transform-box: view-box;
+  animation: hero-title-in 2s .25s cubic-bezier(.2, .8, .2, 1) both;
+}
+.hero-script text {
+  stroke-dasharray: 2400;
+  stroke-dashoffset: 2400;
+  fill-opacity: 0;
+  animation: hero-write 3.2s 1.4s ease-in-out forwards;
+}
+.hero-copy > * {
+  animation: hero-copy-in 1s cubic-bezier(.2, .8, .2, 1) both;
+}
+.hero-copy > *:nth-child(1) { animation-delay: .9s; }
+.hero-copy > *:nth-child(2) { animation-delay: 1.05s; }
+.hero-copy > *:nth-child(3) { animation-delay: 1.2s; }
+.hero-copy > *:nth-child(4) { animation-delay: 1.35s; }
+.hero-copy > *:nth-child(5) { animation-delay: 1.5s; }
+.hero-copy > *:nth-child(6) { animation-delay: 1.7s; }
+
+@keyframes hero-zoom { from { transform: scale(1.14); } to { transform: scale(1); } }
+@keyframes hero-title-in {
+  from { opacity: 0; transform: translateY(70px); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes hero-write {
+  70% { stroke-dashoffset: 0; fill-opacity: 0; }
+  to { stroke-dashoffset: 0; fill-opacity: 1; }
+}
+@keyframes hero-copy-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+/* Shine sweep on primary CTAs */
+.cta-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: cta-shine 4.5s 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes cta-shine { 0%, 60% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+
+/* Scroll reveal (toggled by useScrollReveal) */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity .9s cubic-bezier(.2, .8, .2, 1), transform .9s cubic-bezier(.2, .8, .2, 1);
+}
+[data-reveal].is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scene, .hero-title, .hero-copy > *, .cta-shine::after { animation: none !important; }
+  .hero-script text { stroke-dashoffset: 0; fill-opacity: 1; animation: none !important; }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 1023px) {
+  /* iOS Safari zooms into inputs under 16px */
+  input, select, textarea { font-size: 16px !important; }
+  /* keep the last content clear of the sticky contact bar */
+  body { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+}
+.snap-row { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.snap-row::-webkit-scrollbar { display: none; }

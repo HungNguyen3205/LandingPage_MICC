@@ -26,3 +26,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Real API keys for PHP hosting
+public/api/config.local.php

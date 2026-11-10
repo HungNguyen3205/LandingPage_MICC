@@ -11,7 +11,7 @@ export interface ValueItem {
   id: string;
   title: string;
   description: string;
-  iconName: 'Sparkles' | 'Trees' | 'Waves' | 'Compass';
+  iconName: 'Sparkles' | 'Trees' | 'Waves' | 'Compass' | 'Droplets' | 'FerrisWheel';
 }
 
 export interface ProductSpecs {
@@ -54,6 +54,25 @@ export interface GalleryItem {
   caption: string;
   image: string;
   aspectClass?: string;
+}
+
+/** Một căn cụ thể khách bấm chọn trong bảng giá, dùng để điền sẵn form tư vấn. */
+export interface SelectedUnit {
+  code: string;
+  zone: string;
+  type: string;
+  price: string;
+  priceLabel: string;
+  productName: string;
+}
+
+export interface ExperienceItem {
+  id: string;
+  tag: string;
+  title: string;
+  caption: string;
+  image: string;
+  position?: string;
 }
 
 export interface FAQItem {

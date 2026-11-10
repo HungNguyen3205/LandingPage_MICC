@@ -1,71 +1,74 @@
 import React from 'react';
 import { LeadForm } from './LeadForm';
-import { ShieldCheck, CheckCircle2, Info } from 'lucide-react';
+import type { SelectedUnit } from '../types';
+import { ShieldCheck, PhoneCall, CalendarCheck, FileText } from 'lucide-react';
 
 interface ConsultationFormProps {
   preSelectedProduct?: string;
+  selectedUnit?: SelectedUnit | null;
+  onClearUnit?: () => void;
 }
 
-export const ConsultationForm: React.FC<ConsultationFormProps> = ({ preSelectedProduct }) => {
+const steps = [
+  { icon: FileText, title: 'Nhận bảng giá & quỹ căn', text: 'Quỹ căn còn trống, chính sách chiết khấu và phương án vay mới nhất.' },
+  { icon: PhoneCall, title: 'Chuyên viên gọi lại', text: 'Tư vấn đúng nhu cầu: nghỉ dưỡng, cho thuê hay đầu tư.' },
+  { icon: CalendarCheck, title: 'Tham quan Làng Vân', text: 'Hỗ trợ đưa đón, xem biển, cáp treo và từng phân khu thực tế.' },
+];
+
+export const ConsultationForm: React.FC<ConsultationFormProps> = ({ preSelectedProduct, selectedUnit, onClearUnit }) => {
   return (
-    <section id="lien-he" className="py-20 lg:py-28 bg-forest text-white relative overflow-hidden">
-      {/* Decorative ambient elements */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-champagne/5 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-forest-light/30 blur-3xl pointer-events-none" />
+    <section id="lien-he" className="relative isolate overflow-hidden bg-forest-dark py-14 text-white sm:py-20 lg:py-28">
+      <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[url('/images/lang-van/hero-bg.webp')] bg-cover bg-[center_30%] md:bg-fixed" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-dark via-forest-dark/80 to-forest-dark/95" />
 
-      <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      {/* Phone order: intro → form → steps. Desktop: intro + steps left, form right. */}
+      <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-x-16 lg:gap-y-8 items-start">
 
-          {/* Left Column: Invitation and Brand Promise (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-between pt-2">
-            <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-forest-light/60 border border-champagne/30 text-champagne text-xs font-mono tracking-widest uppercase mb-4">
-                <span>07 / ĐĂNG KÝ TƯ VẤN</span>
-              </div>
+        <div className="lg:col-span-5 lg:row-start-1">
+          <span className="text-xs font-semibold uppercase tracking-[.3em] text-champagne-light">Chương cuối của hành trình</span>
+          <p className="mt-4 font-['Great_Vibes'] text-4xl text-champagne-light sm:text-5xl">Hẹn gặp ở Làng Vân</p>
+          <h2 className="mt-2 font-serif text-3xl sm:text-4xl lg:text-[44px] font-normal leading-[1.2] tracking-tight">
+            Hành trình về biển bắt đầu từ đây.
+          </h2>
+          <p className="mt-5 text-sand/85 text-base leading-relaxed font-light">
+            Để lại thông tin, chỉ mất 30 giây. Đội ngũ MICC Group · NEXME sẽ đồng hành cùng bạn từ bảng giá đến ngày nhận nhà.
+          </p>
+        </div>
 
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-[44px] font-normal text-white leading-[1.2] tracking-tight mb-6">
-                Bắt đầu câu chuyện sống của riêng bạn.
-              </h2>
-
-              <p className="text-sand/85 text-base leading-relaxed mb-8 font-light">
-                Mỗi căn biệt thự và căn hộ tại Vinhomes là một tuyệt tác được tạo tác riêng cho gia chủ yêu chuộng chuẩn mực sống thượng lưu và an nhiên. Đội ngũ tư vấn sẽ gửi đến quý khách trọn bộ tài liệu độc quyền và hỗ trợ giải đáp mọi thắc mắc chu đáo nhất.
-              </p>
-
-              {/* Trust & Privacy Points */}
-              <div className="space-y-4 pt-6 border-t border-white/10">
-                <div className="flex items-start space-x-3 text-sm text-sand/90">
-                  <ShieldCheck className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
-                  <span>Cam kết bảo mật tuyệt đối thông tin cá nhân của quý khách.</span>
-                </div>
-                <div className="flex items-start space-x-3 text-sm text-sand/90">
-                  <CheckCircle2 className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
-                  <span>Tài liệu thông số thiết kế, mặt bằng và định hướng sản phẩm gửi trực tiếp.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Architecture note for future integration */}
-            <div className="mt-10 p-4 rounded-luxury bg-forest-dark/80 border border-champagne/20 text-xs text-sand/75 space-y-1.5">
-              <div className="flex items-center space-x-2 text-champagne font-mono font-medium">
-                <Info className="w-4 h-4 shrink-0" />
-                <span>Kiến trúc tích hợp sẵn sàng:</span>
-              </div>
-              <p>
-                Service layer độc lập, bảo vệ Bot Token an toàn qua Serverless/Webhook và tương thích lưu trữ tự động Google Sheets.
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: Reusable LeadForm component (7 cols) */}
-          <div className="lg:col-span-7">
+        <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1">
+          <div className="rounded-2xl ring-1 ring-champagne/30 shadow-2xl shadow-black/50">
             <LeadForm
               preSelectedProduct={preSelectedProduct}
               variant="home-dark"
               onSuccessRedirect={false}
+              selectedUnit={selectedUnit}
+              onClearUnit={onClearUnit}
             />
           </div>
-
         </div>
+
+        <div className="lg:col-span-5 lg:row-start-2">
+          <ol className="space-y-5">
+            {steps.map(({ icon: Icon, title, text }, index) => (
+              <li key={title} className="flex gap-4">
+                <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-champagne/50 bg-champagne/10 text-champagne">
+                  <Icon aria-hidden="true" className="h-5 w-5" />
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-champagne text-[10px] font-bold text-forest-dark">{index + 1}</span>
+                </span>
+                <span>
+                  <span className="block font-serif text-lg">{title}</span>
+                  <span className="block text-sm text-sand/75">{text}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-8 flex items-start gap-3 border-t border-white/10 pt-6 text-sm text-sand/80">
+            <ShieldCheck aria-hidden="true" className="w-5 h-5 text-champagne shrink-0 mt-0.5" />
+            Thông tin của bạn chỉ dùng để tư vấn dự án và được bảo mật tuyệt đối.
+          </p>
+        </div>
+
       </div>
     </section>
   );

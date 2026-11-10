@@ -7,7 +7,7 @@ export const Amenities: React.FC = () => {
   const currentAmenity = amenitiesData[selectedIndex];
 
   return (
-    <section id="tien-ich" className="py-20 lg:py-28 bg-sand relative overflow-hidden">
+    <section id="tien-ich" className="py-14 sm:py-20 lg:py-28 bg-sand relative overflow-hidden">
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
@@ -63,6 +63,11 @@ export const Amenities: React.FC = () => {
               })}
             </div>
 
+            {/* Phone: photo right under the tabs */}
+            <div className="relative h-56 overflow-hidden rounded-luxury shadow-card sm:h-72 lg:hidden">
+              <img key={currentAmenity.id} src={currentAmenity.image} alt={currentAmenity.title} loading="lazy" className="h-full w-full object-cover" />
+            </div>
+
             {/* Deep Green Card with dynamic details */}
             <div className="bg-forest-dark text-white p-7 sm:p-8 rounded-luxury border border-champagne/20 shadow-card flex flex-col justify-between flex-grow">
               <div>
@@ -103,7 +108,7 @@ export const Amenities: React.FC = () => {
           </div>
 
           {/* Right Column: Large Dynamic Photo (7 cols) with smooth fade transition */}
-          <div className="lg:col-span-7 relative min-h-[380px] lg:min-h-full rounded-luxury overflow-hidden shadow-elevated border border-forest/10 group">
+          <div className="hidden lg:block lg:col-span-7 relative min-h-[380px] lg:min-h-full rounded-luxury overflow-hidden shadow-elevated border border-forest/10 group">
             <img
               key={currentAmenity.id}
               src={currentAmenity.image}

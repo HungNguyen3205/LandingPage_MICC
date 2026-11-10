@@ -230,12 +230,32 @@ function notFoundHttpPlugin(): Plugin {
   };
 }
 
+/**
+ * Vercel serves .php as plain static files, so the PHP backend (incl. config.local.php
+ * with real keys) must never ship there. .vercelignore already excludes it; this is the
+ * second lock in case a build on Vercel still finds the files.
+ */
+function stripPhpOnVercelPlugin(): Plugin {
+  return {
+    name: 'strip-php-on-vercel',
+    apply: 'build',
+    closeBundle() {
+      if (!process.env.VERCEL) return;
+      const apiDir = path.resolve(process.cwd(), 'dist', 'api');
+      if (!fs.existsSync(apiDir)) return;
+      for (const file of fs.readdirSync(apiDir)) {
+        if (file.endsWith('.php')) fs.rmSync(path.join(apiDir, file));
+      }
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   Object.assign(process.env, env);
 
   return {
-    plugins: [react(), apiEndpointPlugin(), notFoundHttpPlugin()],
+    plugins: [react(), apiEndpointPlugin(), notFoundHttpPlugin(), stripPhpOnVercelPlugin()],
   };
 });

@@ -11,7 +11,7 @@ export const Overview: React.FC = () => {
   };
 
   return (
-    <section id="tong-quan" className="py-20 lg:py-28 bg-sand relative overflow-hidden">
+    <section id="tong-quan" className="py-14 sm:py-20 lg:py-28 bg-sand relative overflow-hidden">
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
@@ -21,10 +21,10 @@ export const Overview: React.FC = () => {
               {/* Primary Large Vertical Image */}
               <div className="relative rounded-luxury overflow-hidden shadow-card border border-forest/5 aspect-[4/5] sm:aspect-[3/4]">
                 <img
-                  src="/images/hilltop.webp"
-                  alt="Phối cảnh minh họa dinh thự Hilltop Collection"
+                  src="/images/lang-van/glamping-hoang-hon.webp"
+                  alt="Glamping hoàng hôn nhìn ra vịnh biển Làng Vân"
                   loading="lazy"
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out"
+                  className="w-full h-full object-cover object-[72%_center] transform hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
               </div>
@@ -33,8 +33,8 @@ export const Overview: React.FC = () => {
               <div className="hidden sm:block absolute -bottom-8 -right-6 lg:-right-8 w-3/5 rounded-luxury overflow-hidden shadow-elevated border-4 border-sand">
                 <div className="aspect-[4/3] overflow-hidden">
                   <img
-                    src="/images/vuon-rieng.webp"
-                    alt="Phối cảnh minh họa biệt thự với vườn riêng"
+                    src="/images/lang-van/thuyen-ven-ho.webp"
+                    alt="Thuyền dạo trên hồ cảnh quan"
                     loading="lazy"
                     className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500 ease-out"
                   />
@@ -43,7 +43,7 @@ export const Overview: React.FC = () => {
 
               {/* Decorative Accent Tag */}
               <div className="absolute top-6 left-6 bg-forest-dark/85 backdrop-blur-md text-champagne px-3.5 py-1.5 rounded text-xs tracking-widest font-mono border border-champagne/30">
-                LIFESTYLE SANCTUARY
+                BIỂN · SUỐI · RỪNG
               </div>
             </div>
           </div>
