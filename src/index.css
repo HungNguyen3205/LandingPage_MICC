@@ -182,3 +182,8 @@
 }
 .snap-row { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .snap-row::-webkit-scrollbar { display: none; }
+
+/* Phone hero: title stays put while scrolling so it never slides under the copy */
+@media (max-width: 639px) {
+  .hero-parallax { transform: none; }
+}

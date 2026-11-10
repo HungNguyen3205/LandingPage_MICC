@@ -36,8 +36,8 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section ref={ref} className="relative isolate flex min-h-[max(min(980px,100svh),52vw)] flex-col items-center justify-end overflow-hidden bg-forest-dark px-4 pb-10 pt-32 text-center text-white sm:pb-12">
-      <svg aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMin slice">
+    <section ref={ref} className="relative isolate flex min-h-[100svh] flex-col items-center justify-start overflow-hidden bg-forest-dark px-4 pb-10 pt-[46svh] text-center text-white sm:min-h-[max(min(980px,100svh),52vw)] sm:justify-end sm:pb-12 sm:pt-32">
+      <svg aria-hidden="true" className="absolute inset-x-0 top-0 -z-20 h-[100svh] w-full sm:inset-0 sm:h-full" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMin slice">
         <defs>
           <linearGradient id="lv-type" x1="0" y1="0" x2="1" y2=".25">
             <stop offset="0" stopColor="#fffdf8" />
@@ -88,7 +88,7 @@ export const Hero = () => {
           <a href="#trai-nghiem" className="inline-flex rounded-full border border-white/50 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/20 sm:px-8 sm:py-3.5 sm:text-base">Khám phá Làng Vân</a>
         </div>
 
-        <nav aria-label="Thế mạnh Làng Vân" className="mt-6 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-5 sm:text-left">
+        <nav aria-label="Thế mạnh Làng Vân" className="mt-8 hidden grid-cols-3 gap-5 text-left sm:grid">
           {pillars.map(({ title, text, icon: Icon }) => (
             <a key={title} href="#trai-nghiem" className="group flex flex-col items-center gap-2 rounded-2xl border border-white/15 bg-black/45 px-2 py-3 shadow-xl shadow-black/30 backdrop-blur-md transition hover:-translate-y-1 hover:border-champagne/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne motion-reduce:transform-none sm:flex-row sm:gap-4 sm:p-5">
               <Icon aria-hidden="true" className="h-7 w-7 shrink-0 text-champagne transition group-hover:scale-110 sm:h-11 sm:w-11" strokeWidth={1.6} />
