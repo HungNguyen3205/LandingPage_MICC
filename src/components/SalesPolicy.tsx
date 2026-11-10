@@ -1,6 +1,6 @@
 const zones = [
   {
-    name: 'Vịnh Mây', priceLabel: 'Giá TTTĐ', date: '05/11/2026',
+    id: 'vinh-may', name: 'Vịnh Mây', priceLabel: 'Giá TTTĐ', date: '05/11/2026',
     policy: 'Voucher tối đa 30% giá trị căn nhà. Thanh toán sớm chiết khấu dòng tiền 13%/năm. Ưu đãi VinClub lên đến 0,9%.',
     policyFile: '1WjXCHFre2a8-Iuh-70MJV-zZO2fHScVr', inventoryFile: '1_Qpc1FPH7-7RXgpWKpfvotfdbpS7UMLK',
     units: [
@@ -10,7 +10,7 @@ const zones = [
     ],
   },
   {
-    name: 'Bạch Vân', priceLabel: 'Giá Full',
+    id: 'bach-van', name: 'Bạch Vân', priceLabel: 'Giá Full',
     policy: 'Poster quỹ căn giãn xây và thô xây luôn ghi chiết khấu dòng tiền 13%/năm khi thanh toán sớm. Ưu đãi về ở sớm 10% chỉ áp dụng cho 345 căn thô xây luôn.',
     policyFile: '1qjhViAxsH3voOxT6W9xN5hK2ylaUFVCm', inventoryFile: '1z9UoYbPUZtLOjP0raAP-o7e6p0U6DDu7',
     units: [
@@ -20,7 +20,7 @@ const zones = [
     ],
   },
   {
-    name: 'Đảo Ngọc', priceLabel: 'Giá Full', date: '06/11/2026',
+    id: 'dao-ngoc', name: 'Đảo Ngọc', priceLabel: 'Giá Full', date: '06/11/2026',
     policy: 'Quỹ căn hoàn thiện xây luôn khu 3 có chiết khấu dòng tiền 13%/năm khi thanh toán sớm. Ưu đãi về ở sớm 10% và cam kết tiền thuê 7%/năm áp dụng có điều kiện theo quỹ căn.',
     policyFile: '1UpRznYtSCbLUEemcXtS7nqANIqpryy4U', inventoryFile: '1tkL6oTUG4vRcg3UU9CJnk6NcTK_0fDCh',
     units: [
@@ -43,12 +43,12 @@ export const SalesPolicy = () => (
       <h2 className="mt-3 font-serif text-3xl text-forest-dark sm:text-5xl">Quỹ căn & chính sách bán hàng</h2>
       <p className="mt-4 max-w-3xl text-sm leading-relaxed text-ink/75">Giá tham khảo theo tài liệu từng phân khu, đơn vị tỷ đồng. Tài liệu Vịnh Mây ghi giá TTTĐ, còn Bạch Vân và Đảo Ngọc ghi giá Full. Vui lòng xác nhận giá và tình trạng căn trước khi giao dịch.</p>
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
-        {zones.map((zone, index) => (
-          <article id={`phan-khu-${index}`} key={zone.name} className="scroll-mt-24 rounded-2xl border border-forest/15 bg-white p-5 shadow-sm">
+        {zones.map((zone) => (
+          <article id={`phan-khu-${zone.id}`} key={zone.name} className="scroll-mt-24 rounded-2xl border border-forest/15 bg-white p-5 shadow-sm">
             <h3 className="font-serif text-2xl text-forest-dark">{zone.name}</h3>
             <p className="mt-2 text-xs font-semibold text-forest">{zone.date ? `Quỹ căn cập nhật ${zone.date}` : 'Quỹ căn theo ảnh tài liệu'}</p>
             <p className="mt-3 text-sm leading-relaxed">{zone.policy}</p>
-            {index === 1 && <p className="mt-2 text-xs text-ink/75">Tên tệp ghi Bạch Vân, logo trên poster ghi Đảo Ngọc. Cần xác nhận phạm vi áp dụng.</p>}
+            {zone.id === 'bach-van' && <p className="mt-2 text-xs text-ink/75">Tên tệp ghi Bạch Vân, logo trên poster ghi Đảo Ngọc. Cần xác nhận phạm vi áp dụng.</p>}
             <div className="mt-4 flex flex-wrap gap-3 text-sm font-semibold text-forest">
               <a className="underline underline-offset-4" href={driveFile(zone.policyFile)} target="_blank" rel="noopener noreferrer">Ảnh chính sách</a>
               <a className="underline underline-offset-4" href={driveFile(zone.inventoryFile)} target="_blank" rel="noopener noreferrer">Mặt bằng quỹ căn</a>
