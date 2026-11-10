@@ -7,6 +7,7 @@ import { Collection } from '../components/Collection';
 import { Amenities } from '../components/Amenities';
 import { Location } from '../components/Location';
 import { Gallery } from '../components/Gallery';
+import { SalesPolicy } from '../components/SalesPolicy';
 import { FAQ } from '../components/FAQ';
 import { ConsultationForm } from '../components/ConsultationForm';
 
@@ -44,6 +45,7 @@ export const HomePage: React.FC = () => {
 
       {/* 02. Product Collection */}
       <Collection onSelectProduct={handleSelectProduct} />
+      <SalesPolicy />
 
       {/* 03. Amenities & Lifestyle Showcase */}
       <Amenities />
