@@ -123,9 +123,9 @@ export const productsData: ProductItem[] = [
       legal: 'Giá TTTĐ',
       handover: 'Theo quỹ căn',
       policies: [
-        'Voucher tối đa 30% giá trị căn nhà',
         'Chiết khấu thanh toán sớm 13%/năm',
-        'Vay 70% hỗ trợ lãi suất · VinClub đến 0,9%',
+        'Vay 70% hỗ trợ lãi suất 18 – 60 tháng',
+        'Bảo lãnh ngân hàng 0,5% · VinClub đến 0,9%',
       ],
     },
   },
@@ -147,9 +147,9 @@ export const productsData: ProductItem[] = [
       legal: 'Giá TTTĐ',
       handover: 'Theo quỹ căn',
       policies: [
-        'Voucher tối đa 30% giá trị căn nhà',
         'Chiết khấu thanh toán sớm 13%/năm',
-        'Vay 70% hỗ trợ lãi suất · VinClub đến 0,9%',
+        'Vay 70% hỗ trợ lãi suất 18 – 60 tháng',
+        'Bảo lãnh ngân hàng 0,5% · VinClub đến 0,9%',
       ],
     },
   },
@@ -171,9 +171,9 @@ export const productsData: ProductItem[] = [
       legal: 'Giá Full',
       handover: 'Giãn xây / Thô xây luôn',
       policies: [
-        'Voucher tối đa 30% giá trị căn nhà',
         'Chiết khấu thanh toán sớm 13%/năm',
         'Về ở sớm 10% (345 căn thô xây luôn)',
+        'Vay 70% hỗ trợ lãi suất · VinClub đến 0,9%',
       ],
     },
   },
@@ -308,7 +308,7 @@ export const faqData: FAQItem[] = [
   {
     id: 'faq-2',
     question: 'Chính sách bán hàng và ưu đãi tài chính của dự án như thế nào?',
-    answer: 'Chính sách áp dụng từ 05/10/2026: voucher sở hữu nhà Vinhomes tối đa 30% giá trị, chiết khấu thanh toán sớm 13%/năm, vay 70% với các phương án hỗ trợ lãi suất 18 – 60 tháng, bảo lãnh ngân hàng 0,5% và ưu đãi VinClub đến 0,9%. Bạch Vân và Đảo Ngọc có thêm ưu đãi về ở sớm 10%; Đảo Ngọc có cam kết tiền thuê 7%/năm. Một số ưu đãi áp dụng có điều kiện theo từng quỹ căn.',
+    answer: 'Chính sách áp dụng từ 05/10/2026: chiết khấu thanh toán sớm 13%/năm, vay 70% với các phương án hỗ trợ lãi suất 18 – 60 tháng, bảo lãnh ngân hàng 0,5% và ưu đãi VinClub đến 0,9%. Bạch Vân và Đảo Ngọc có thêm ưu đãi về ở sớm 10%; Đảo Ngọc có cam kết tiền thuê 7%/năm. Một số ưu đãi áp dụng có điều kiện theo từng quỹ căn.',
   },
   {
     id: 'faq-3',

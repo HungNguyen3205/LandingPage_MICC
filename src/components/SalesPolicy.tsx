@@ -24,8 +24,8 @@ const zones: Zone[] = [
   {
     id: 'vinh-may', name: 'Vịnh Mây', badge: 'Quỹ độc quyền', inspiration: 'Cảm hứng Malibu Hills', image: '/images/lang-van/ga-cap-treo.webp',
     priceLabel: 'Giá TTTĐ', date: '05/11/2026',
-    highlights: [{ value: '30%', label: 'Voucher tối đa' }, { value: '13%', label: 'CK dòng tiền/năm' }, { value: '0,9%', label: 'Ưu đãi VinClub' }],
-    policy: 'Voucher tối đa 30% giá trị căn nhà, chiết khấu thanh toán sớm 13%/năm, hỗ trợ lãi suất vay 70%, bảo lãnh ngân hàng 0,5%.',
+    highlights: [{ value: '13%', label: 'CK dòng tiền/năm' }, { value: '70%', label: 'Vay hỗ trợ lãi suất' }, { value: '0,9%', label: 'Ưu đãi VinClub' }],
+    policy: 'Chiết khấu thanh toán sớm 13%/năm, vay 70% với hỗ trợ lãi suất 18 – 60 tháng, bảo lãnh ngân hàng 0,5%, ưu đãi VinClub đến 0,9%.',
     policyFile: '1WjXCHFre2a8-Iuh-70MJV-zZO2fHScVr', inventoryFile: '1_Qpc1FPH7-7RXgpWKpfvotfdbpS7UMLK',
     units: [
       ['VM-03', 'Liền kề', '70', 'Đông Bắc', '5,781'], ['VM-10', 'Liền kề', '75', 'Tây Nam', '6,537'], ['VM-11', 'Liền kề', '105', 'Đông Bắc', '7,221'],
@@ -36,8 +36,8 @@ const zones: Zone[] = [
   {
     id: 'bach-van', name: 'Bạch Vân', badge: 'Quỹ chung', inspiration: 'Giữa hồ & suối cảnh quan', image: '/images/lang-van/ho-canh-quan.webp',
     priceLabel: 'Giá Full',
-    highlights: [{ value: '30%', label: 'Voucher tối đa' }, { value: '13%', label: 'CK dòng tiền/năm' }, { value: '10%', label: 'Ưu đãi về ở sớm' }],
-    policy: 'Áp dụng cho quỹ căn giãn xây và thô xây luôn. Ưu đãi về ở sớm 10% dành cho 345 căn thô xây luôn; VinClub 0,5% – 0,9%.',
+    highlights: [{ value: '13%', label: 'CK dòng tiền/năm' }, { value: '10%', label: 'Ưu đãi về ở sớm' }, { value: '0,9%', label: 'Ưu đãi VinClub' }],
+    policy: 'Áp dụng cho quỹ căn giãn xây và thô xây luôn. Chiết khấu thanh toán sớm 13%/năm; ưu đãi về ở sớm 10% dành cho 345 căn thô xây luôn; VinClub 0,5% – 0,9%.',
     policyFile: '1qjhViAxsH3voOxT6W9xN5hK2ylaUFVCm', inventoryFile: '1z9UoYbPUZtLOjP0raAP-o7e6p0U6DDu7',
     units: [
       ['ĐLHV-180', 'Liền kề', '80', 'Tây Bắc', '8,592'], ['ĐLHV-176', 'Liền kề', '80,1', 'Tây Bắc', '8,621'], ['ĐLHV-201', 'Liền kề', '80', 'Tây Nam', '8,735'],
