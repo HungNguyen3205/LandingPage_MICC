@@ -23,13 +23,22 @@ export const projectMeta: ProjectMetadata = {
   contactStatusNotice: 'Hotline tư vấn: 0905 688 070',
 };
 
+/**
+ * Bật/tắt các phần trên trang mà không cần xóa code.
+ * showPriceList: section "Quỹ căn & chính sách bán hàng" (#bang-gia) + mục "Bảng giá" trên menu.
+ *   Tạm ẩn theo yêu cầu khách (11/2026) — đổi thành true để hiện lại.
+ */
+export const featureFlags = {
+  showPriceList: false,
+};
+
 export const navigationItems: NavItem[] = [
   { label: 'Trải nghiệm', href: '/#trai-nghiem' },
   { label: 'Sản phẩm', href: '/#bo-suu-tap' },
   { label: 'Tiện ích', href: '/#tien-ich' },
   { label: 'Vị trí', href: '/#vi-tri' },
   { label: 'Thư viện', href: '/#thu-vien' },
-  { label: 'Bảng giá', href: '/#bang-gia' },
+  ...(featureFlags.showPriceList ? [{ label: 'Bảng giá', href: '/#bang-gia' }] : []),
   { label: 'Liên hệ', href: '/lien-he' },
 ];
 

@@ -11,6 +11,7 @@ import { Experiences } from '../components/Experiences';
 import { StoryCta } from '../components/StoryCta';
 import { JourneyBar } from '../components/JourneyBar';
 import { SalesPolicy } from '../components/SalesPolicy';
+import { featureFlags } from '../data/projectData';
 import { FAQ } from '../components/FAQ';
 import { ConsultationForm } from '../components/ConsultationForm';
 import type { SelectedUnit } from '../types';
@@ -98,7 +99,10 @@ export const HomePage: React.FC = () => {
 
       {/* 02. Product Collection */}
       <Collection onSelectProduct={handleSelectProduct} />
-      <SalesPolicy onSelectUnit={handleSelectUnit} onSelectProduct={handleSelectProduct} />
+      {/* Tạm ẩn theo yêu cầu khách — bật lại bằng featureFlags.showPriceList trong projectData.ts */}
+      {featureFlags.showPriceList && (
+        <SalesPolicy onSelectUnit={handleSelectUnit} onSelectProduct={handleSelectProduct} />
+      )}
 
       {/* Bridge → lead form */}
       <StoryCta
