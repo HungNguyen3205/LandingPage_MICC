@@ -20,7 +20,7 @@ export const projectMeta: ProjectMetadata = {
   disclaimerShort: 'Thông tin và hình ảnh dùng để tham khảo. Phối cảnh mang tính minh họa.',
   disclaimerDetailed: 'Website thuộc quyền sở hữu và vận hành bởi đối tác phân phối chính thức của dự án Vinhomes Hải Vân Bay Đà Nẵng. Mọi thông tin, tài liệu và hình ảnh được cập nhật dựa trên nguồn tin từ Chủ đầu tư và có thể điều chỉnh tùy theo quy định thực tế.',
   designerCredit: 'MICC Group · NEXME',
-  contactStatusNotice: 'Hotline tư vấn: 0987 069 770',
+  contactStatusNotice: 'Hotline tư vấn: 0905 688 070',
 };
 
 export const navigationItems: NavItem[] = [
@@ -40,7 +40,7 @@ export const consultationCtaConfig = {
 
 export const contactConfig: ContactInfoConfig = {
   advisorUnit: 'Văn phòng Bán hàng Vinhomes Hải Vân Bay (MICC Group · NEXME)',
-  hotline: '0987 069 770',
+  hotline: '0905 688 070',
   email: 'danava.haivanbay@gmail.com',
   officeAddress: '305A Trần Hưng Đạo, P. An Hải, TP. Đà Nẵng',
   mapCoordinates: undefined,
@@ -51,7 +51,7 @@ export const privacyPolicyConfig: PrivacyPolicyConfig = {
   lastUpdatedDate: '20/10/2026',
   operatorNotice: 'Nội dung cập nhật dựa trên thông tin công bố chính thức của dự án Vinhomes Hải Vân Bay Đà Nẵng.',
   retentionNotice: 'Lưu trữ phục vụ liên hệ tư vấn và gửi tài liệu dự án',
-  contactNotice: 'Hotline tiếp nhận: 0987 069 770 • Văn phòng: 305A Trần Hưng Đạo, P. An Hải, TP. Đà Nẵng',
+  contactNotice: 'Hotline tiếp nhận: 0905 688 070 • Văn phòng: 305A Trần Hưng Đạo, P. An Hải, TP. Đà Nẵng',
 };
 
 export const VALID_PRODUCT_PARAM_MAP: Record<string, string> = {
@@ -69,8 +69,8 @@ export const sanitizeProductQueryParam = (param: string | null | undefined): str
 };
 
 export const quickContactConfig: QuickContactConfig = {
-  phoneNumber: '0987069770',
-  zaloUrl: 'https://zalo.me/0987069770',
+  phoneNumber: '0905688070',
+  zaloUrl: 'https://zalo.me/0905688070',
   enableScrollTop: true,
   enableMobileBottomBar: true,
 };
@@ -318,6 +318,6 @@ export const faqData: FAQItem[] = [
   {
     id: 'faq-4',
     question: 'Làm thế nào để tôi nhận bảng giá và đăng ký lịch xem thực tế?',
-    answer: 'Quý khách vui lòng để lại thông tin trong biểu mẫu đăng ký tư vấn hoặc liên hệ trực tiếp hotline 0987 069 770. Chuyên viên tư vấn F1 sẽ gửi trọn bộ tài liệu chi tiết, mặt bằng phân lô, bảng giá ngoại giao và hỗ trợ đưa đón quý khách tham quan thực tế.',
+    answer: 'Quý khách vui lòng để lại thông tin trong biểu mẫu đăng ký tư vấn hoặc liên hệ trực tiếp hotline 0905 688 070. Chuyên viên tư vấn F1 sẽ gửi trọn bộ tài liệu chi tiết, mặt bằng phân lô, bảng giá ngoại giao và hỗ trợ đưa đón quý khách tham quan thực tế.',
   },
 ];

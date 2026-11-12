@@ -240,5 +240,5 @@ http_response_code(502);
 echo json_encode([
     'success' => false,
     'statusCode' => 'DELIVERY_FAILED',
-    'message' => 'Hệ thống tạm thời chưa nhận được đăng ký. Quý khách vui lòng gọi hotline 0987 069 770 để được hỗ trợ ngay.'
+    'message' => 'Hệ thống tạm thời chưa nhận được đăng ký. Quý khách vui lòng gọi hotline 0905 688 070 để được hỗ trợ ngay.'
 ]);
