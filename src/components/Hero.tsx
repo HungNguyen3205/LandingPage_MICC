@@ -47,10 +47,12 @@ export const Hero = () => {
             <stop offset="1" stopColor="#eef3f2" />
             <animateTransform attributeName="gradientTransform" type="translate" values="-1 0; 1 0; 1 0" keyTimes="0; .45; 1" dur="7s" begin="1.6s" repeatCount="indefinite" />
           </linearGradient>
-          <filter id="lv-glow" x="-10%" y="-30%" width="120%" height="160%">
+          {/* Filter regions in user space (whole scene + margin), not the text's bounding box:
+              iOS WebKit miscomputes the bbox of text with textLength, which clipped the title. */}
+          <filter id="lv-glow" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1936" height="1424">
             <feDropShadow dx="0" dy="8" stdDeviation="14" floodColor="#081f2b" floodOpacity=".45" />
           </filter>
-          <filter id="lv-script-shadow" x="-10%" y="-40%" width="120%" height="180%">
+          <filter id="lv-script-shadow" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1936" height="1424">
             <feDropShadow dx="0" dy="3" stdDeviation="5" floodColor="#000" floodOpacity=".7" />
           </filter>
         </defs>
