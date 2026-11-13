@@ -30,13 +30,18 @@ export const projectMeta: ProjectMetadata = {
  */
 export const featureFlags = {
   showPriceList: false,
-  /** Dải ảnh quỹ căn trượt ngang (#quy-can), ảnh lấy từ thư mục Drive của khách */
-  showUnitShowcase: true,
+  /**
+   * Quỹ căn (#quy-can): 54 căn Bạch Vân · Đảo Ngọc · Vịnh Mây theo sheet của khách, dữ liệu ở src/data/exclusiveInventory.ts.
+   * Thay cho dải 13 poster cũ (UnitShowcase) theo yêu cầu khách 13/11/2026 — chỉ hiện một trong hai.
+   */
+  showExclusiveInventory: true,
+  /** Dải 13 poster cũ trượt ngang — chỉ dùng khi tắt showExclusiveInventory */
+  showUnitShowcase: false,
 };
 
 export const navigationItems: NavItem[] = [
   { label: 'Trải nghiệm', href: '/#trai-nghiem' },
-  ...(featureFlags.showUnitShowcase ? [{ label: 'Quỹ căn', href: '/#quy-can' }] : []),
+  ...(featureFlags.showExclusiveInventory || featureFlags.showUnitShowcase ? [{ label: 'Quỹ căn', href: '/#quy-can' }] : []),
   { label: 'Sản phẩm', href: '/#bo-suu-tap' },
   { label: 'Tiện ích', href: '/#tien-ich' },
   { label: 'Vị trí', href: '/#vi-tri' },

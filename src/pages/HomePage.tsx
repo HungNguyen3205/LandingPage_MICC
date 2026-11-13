@@ -12,6 +12,7 @@ import { StoryCta } from '../components/StoryCta';
 import { JourneyBar } from '../components/JourneyBar';
 import { SalesPolicy } from '../components/SalesPolicy';
 import { UnitShowcase } from '../components/UnitShowcase';
+import { ExclusiveInventory } from '../components/ExclusiveInventory';
 import { featureFlags } from '../data/projectData';
 import { FAQ } from '../components/FAQ';
 import { ConsultationForm } from '../components/ConsultationForm';
@@ -84,8 +85,12 @@ export const HomePage: React.FC = () => {
       {/* Một ngày ở Làng Vân */}
       <Experiences />
 
-      {/* Quỹ căn: poster từng căn trượt ngang */}
-      {featureFlags.showUnitShowcase && <UnitShowcase />}
+      {/* Quỹ căn: 3 phân khu theo sheet của khách (thay cho dải poster cũ) */}
+      {featureFlags.showExclusiveInventory ? (
+        <ExclusiveInventory onSelectUnit={handleSelectUnit} />
+      ) : (
+        featureFlags.showUnitShowcase && <UnitShowcase />
+      )}
 
       {/* Bridge → lead form */}
       <StoryCta
