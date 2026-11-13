@@ -90,6 +90,8 @@ export interface ConsultationFormData {
   notes: string;
   /** Căn chọn trong bảng giá, gửi riêng để Telegram/Sheet hiển thị rõ */
   unit?: string;
+  /** Ghi đè trang nguồn (ví dụ popup), mặc định là đường dẫn hiện tại */
+  pageSource?: string;
   consentAgreed: boolean;
   _hp_company?: string; // Honeypot field chống spam
 }

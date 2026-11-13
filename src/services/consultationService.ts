@@ -54,7 +54,7 @@ class ConsultationService {
   public async submitLead(data: ConsultationFormData): Promise<FormSubmissionResult> {
     const utm = this.getUtmParams();
     const idempotencyKey = this.generateIdempotencyKey();
-    const pageSource = typeof window !== 'undefined' ? window.location.pathname : '/lien-he';
+    const pageSource = data.pageSource || (typeof window !== 'undefined' ? window.location.pathname : '/lien-he');
 
     const payload = {
       ...data,

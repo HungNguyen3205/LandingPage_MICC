@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { QuickContact } from './components/QuickContact';
+import { PhonePopup } from './components/PhonePopup';
 import { HomePage } from './pages/HomePage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
@@ -51,6 +52,9 @@ export function App() {
 
         {/* Shared Floating Actions & Quick Contact */}
         <QuickContact />
+
+        {/* Popup xin số điện thoại → Telegram + Google Sheet */}
+        <PhonePopup />
       </div>
     </BrowserRouter>
   );
