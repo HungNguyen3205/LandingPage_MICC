@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Waves, Trees, FerrisWheel, ChevronDown, type LucideIcon } from 'lucide-react';
+import { TITLE_ADVANCE, TITLE_PATH, TITLE_UPM } from './heroTitlePath';
 
 type Pillar = { title: string; text: string; icon: LucideIcon };
 
@@ -9,7 +10,12 @@ const pillars: Pillar[] = [
   { title: 'Vui chơi giải trí', text: 'Công viên chủ đề, lễ hội đêm và khu vui chơi cho trẻ em mỗi cuối tuần.', icon: FerrisWheel },
 ];
 
-const TITLE_FONT = "'Playfair Display', 'Noto Serif', Georgia, serif";
+/** Đặt path tiêu đề như <text x y fontSize textLength textAnchor="middle">: tâm ở cx, chân chữ ở y. */
+const titleTransform = (cx: number, y: number, fontSize: number, width: number) => {
+  const sx = width / TITLE_ADVANCE;
+  const sy = fontSize / TITLE_UPM;
+  return `translate(${cx - width / 2} ${y}) scale(${sx.toFixed(5)} ${sy.toFixed(5)})`;
+};
 const SCRIPT_FONT = "'Great Vibes', 'Dancing Script', cursive";
 
 /**
@@ -47,8 +53,7 @@ export const Hero = () => {
             <stop offset="1" stopColor="#eef3f2" />
             <animateTransform attributeName="gradientTransform" type="translate" values="-1 0; 1 0; 1 0" keyTimes="0; .45; 1" dur="7s" begin="1.6s" repeatCount="indefinite" />
           </linearGradient>
-          {/* Filter regions in user space (whole scene + margin), not the text's bounding box:
-              iOS WebKit miscomputes the bbox of text with textLength, which clipped the title. */}
+          {/* Vùng filter tính theo cả khung cảnh (userSpaceOnUse), không theo khung chữ */}
           <filter id="lv-glow" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1936" height="1424">
             <feDropShadow dx="0" dy="8" stdDeviation="14" floodColor="#081f2b" floodOpacity=".45" />
           </filter>
@@ -63,9 +68,9 @@ export const Hero = () => {
           <g className="hero-parallax">
             {/* Filter đặt ở nhóm ngoài, nhóm animate bên trong không đụng tới thuộc tính filter */}
             <g filter="url(#lv-glow)">
-              <g className="hero-title" fill="url(#lv-type)" fontFamily={TITLE_FONT} fontStyle="italic" fontWeight="900" textAnchor="middle">
-                <text className="hidden sm:block" x="790" y="292" fontSize="222" textLength="730" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
-                <text className="sm:hidden" x="768" y="292" fontSize="138" textLength="430" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
+              <g className="hero-title" fill="url(#lv-type)">
+                <path className="hidden sm:block" d={TITLE_PATH} transform={titleTransform(790, 292, 222, 730)} />
+                <path className="sm:hidden" d={TITLE_PATH} transform={titleTransform(768, 292, 138, 430)} />
               </g>
             </g>
           </g>
