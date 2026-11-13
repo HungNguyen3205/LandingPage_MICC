@@ -93,12 +93,12 @@ export const UnitShowcase: React.FC = () => {
     <section
       id="quy-can"
       ref={sectionRef}
-      className="relative isolate overflow-hidden bg-forest-dark py-14 text-white sm:py-20 lg:py-24"
+      className="relative isolate overflow-hidden bg-forest-dark pt-2 pb-14 text-white sm:pt-4 sm:pb-20 lg:pt-6 lg:pb-24"
     >
       {/* Ánh vàng mờ phía sau cho nền bớt phẳng */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -z-10 inset-0 bg-[radial-gradient(60%_50%_at_15%_0%,rgba(200,164,107,.18),transparent_70%)]"
+        className="pointer-events-none absolute -z-10 inset-0 bg-[radial-gradient(45%_35%_at_20%_55%,rgba(200,164,107,.13),transparent_100%)]"
       />
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-5 sm:mb-10 md:flex-row md:items-end md:justify-between">

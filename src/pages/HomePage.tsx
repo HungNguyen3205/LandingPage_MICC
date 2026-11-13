@@ -84,6 +84,9 @@ export const HomePage: React.FC = () => {
       {/* Một ngày ở Làng Vân */}
       <Experiences />
 
+      {/* Quỹ căn: poster từng căn trượt ngang */}
+      {featureFlags.showUnitShowcase && <UnitShowcase />}
+
       {/* Bridge → lead form */}
       <StoryCta
         image="/images/lang-van/glamping-hoang-hon.webp"
@@ -100,9 +103,6 @@ export const HomePage: React.FC = () => {
 
       {/* 02. Product Collection */}
       <Collection onSelectProduct={handleSelectProduct} />
-
-      {/* Quỹ căn: poster từng căn trượt ngang */}
-      {featureFlags.showUnitShowcase && <UnitShowcase />}
       {/* Tạm ẩn theo yêu cầu khách — bật lại bằng featureFlags.showPriceList trong projectData.ts */}
       {featureFlags.showPriceList && (
         <SalesPolicy onSelectUnit={handleSelectUnit} onSelectProduct={handleSelectProduct} />

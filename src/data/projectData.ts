@@ -36,11 +36,11 @@ export const featureFlags = {
 
 export const navigationItems: NavItem[] = [
   { label: 'Trải nghiệm', href: '/#trai-nghiem' },
+  ...(featureFlags.showUnitShowcase ? [{ label: 'Quỹ căn', href: '/#quy-can' }] : []),
   { label: 'Sản phẩm', href: '/#bo-suu-tap' },
   { label: 'Tiện ích', href: '/#tien-ich' },
   { label: 'Vị trí', href: '/#vi-tri' },
   { label: 'Thư viện', href: '/#thu-vien' },
-  ...(featureFlags.showUnitShowcase ? [{ label: 'Quỹ căn', href: '/#quy-can' }] : []),
   ...(featureFlags.showPriceList ? [{ label: 'Bảng giá', href: '/#bang-gia' }] : []),
   { label: 'Liên hệ', href: '/lien-he' },
 ];
