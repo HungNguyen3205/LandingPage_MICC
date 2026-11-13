@@ -1,35 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CheckCircle2, Loader2, ShieldCheck, Ticket, X } from 'lucide-react';
+import { CheckCircle2, Hourglass, Loader2, ShieldCheck, Ticket, X } from 'lucide-react';
 import { leadService } from '../services/consultationService';
 
 /** Popup voucher chỉ xin số điện thoại. Lead đi chung đường /api/consultation → Telegram + Google Sheet. */
 
 const SHOW_DELAY_MS = 600; // vào web là hiện (chờ một nhịp cho trang kịp hiện)
-// Chỉ lưu cờ đã xem / đã gửi, không lưu số điện thoại của khách
-const SEEN_KEY = 'micc_phone_popup_seen';
-const DONE_KEY = 'micc_phone_popup_done';
 const HIDDEN_ON = ['/dang-ky-thanh-cong', '/chinh-sach-bao-mat'];
 const PHONE_REGEX = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
 
 // Các backend đều bắt buộc họ tên ≥ 2 ký tự: dùng tên tạm để Telegram/Sheet nhận ra lead voucher từ popup
 const POPUP_NAME = '🎫 Khách có voucher';
 const PAGE_LABELS: Record<string, string> = { '/': 'Trang chủ', '/lien-he': 'Trang liên hệ' };
-
-const safeGet = (store: 'local' | 'session', key: string) => {
-  try {
-    return (store === 'local' ? localStorage : sessionStorage).getItem(key);
-  } catch {
-    return null;
-  }
-};
-const safeSet = (store: 'local' | 'session', key: string) => {
-  try {
-    (store === 'local' ? localStorage : sessionStorage).setItem(key, '1');
-  } catch {
-    /* trình duyệt chặn storage: bỏ qua */
-  }
-};
 
 export const PhonePopup: React.FC = () => {
   const { pathname } = useLocation();
@@ -40,15 +22,17 @@ export const PhonePopup: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  // Mỗi lần tải (hoặc tải lại) trang hiện một lần; chuyển trang trong web thì không bật lại
+  const shown = useRef(false);
 
   const hiddenHere = HIDDEN_ON.includes(pathname);
 
-  // Hiện ngay khi vào web, mỗi phiên một lần; khách đã gửi rồi thì không hiện lại
+  // Vào web hoặc tải lại trang là hiện, không ghi nhớ gì trong trình duyệt
   useEffect(() => {
-    if (hiddenHere || safeGet('local', DONE_KEY) || safeGet('session', SEEN_KEY)) return;
+    if (hiddenHere || shown.current) return;
     const timer = window.setTimeout(() => {
+      shown.current = true;
       setOpen(true);
-      safeSet('session', SEEN_KEY);
     }, SHOW_DELAY_MS);
     return () => window.clearTimeout(timer);
   }, [hiddenHere]);
@@ -103,7 +87,6 @@ export const PhonePopup: React.FC = () => {
       });
 
       if (result.success) {
-        safeSet('local', DONE_KEY);
         setDone(
           result.isDemo
             ? 'Bản demo: số đã được kiểm tra nhưng chưa gửi đến chuyên viên.'
@@ -175,14 +158,14 @@ export const PhonePopup: React.FC = () => {
                 <span className="text-xs font-bold uppercase tracking-[.24em] text-forest-dark">Voucher Vinhomes</span>
               </div>
 
-              <h2 id="phone-popup-title" className="font-serif text-[28px] leading-tight sm:text-[32px] mb-1">
-                Anh/Chị đã có voucher
+              <h2 id="phone-popup-title" className="mb-4">
+                <span className="block font-serif text-[28px] leading-tight sm:text-[32px]">Tận dụng tối đa</span>
+                <span className="block font-['Great_Vibes',cursive] text-[42px] leading-tight text-champagne drop-shadow">
+                  voucher của bạn
+                </span>
               </h2>
-              <p className="font-['Great_Vibes',cursive] text-[40px] leading-none text-champagne drop-shadow mb-4">
-                Tận dụng ngay!
-              </p>
               <p className="mx-auto mb-6 max-w-[300px] text-sm leading-relaxed text-white/80">
-                Để lại số điện thoại, chuyên viên sẽ gọi lại hướng dẫn cách dùng voucher cho căn phù hợp tại Làng Vân.
+                Để lại số điện thoại để được tư vấn chi tiết
               </p>
 
               <form onSubmit={handleSubmit} noValidate>
@@ -210,7 +193,7 @@ export const PhonePopup: React.FC = () => {
                     setPhone(e.target.value);
                     if (error) setError('');
                   }}
-                  placeholder="Nhập số điện thoại của Anh/Chị"
+                  placeholder="Số điện thoại của bạn"
                   disabled={submitting}
                   aria-invalid={Boolean(error)}
                   aria-describedby={error ? 'popup-phone-error' : undefined}
@@ -240,7 +223,15 @@ export const PhonePopup: React.FC = () => {
                 </button>
               </form>
 
-              <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-white/15 bg-white/10 p-3 text-left backdrop-blur">
+              <p className="mt-4 flex items-center justify-center gap-1.5 text-[13px] text-white/85">
+                <Hourglass className="h-3.5 w-3.5 shrink-0 text-champagne" aria-hidden="true" />
+                <span>
+                  Chính sách ưu đãi có thời hạn –{' '}
+                  <strong className="font-semibold text-champagne">Quy đổi ngay!!!</strong>
+                </span>
+              </p>
+
+              <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-white/15 bg-white/10 p-3 text-left backdrop-blur">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-champagne" aria-hidden="true" />
                 <p className="text-[12px] leading-relaxed text-white/80">
                   <strong className="font-semibold text-white">Cam kết bảo mật thông tin khách hàng.</strong>{' '}
