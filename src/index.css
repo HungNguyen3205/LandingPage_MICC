@@ -138,8 +138,9 @@
 
 @keyframes hero-zoom { from { transform: scale(1.14); } to { transform: scale(1); } }
 @keyframes hero-title-in {
-  from { opacity: 0; transform: translateY(70px); filter: blur(10px); }
-  to { opacity: 1; transform: none; filter: none; }
+  /* Không animate CSS filter: nó ghi đè filter SVG và trên iOS WebKit cắt mất hai đầu chữ (textLength) */
+  from { opacity: 0; transform: translateY(70px); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes hero-write {
   70% { stroke-dashoffset: 0; fill-opacity: 0; }

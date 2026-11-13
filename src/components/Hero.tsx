@@ -61,9 +61,12 @@ export const Hero = () => {
           <image href="/images/lang-van/hero-bg.webp" width="1536" height="1024" />
 
           <g className="hero-parallax">
-            <g className="hero-title" fill="url(#lv-type)" filter="url(#lv-glow)" fontFamily={TITLE_FONT} fontStyle="italic" fontWeight="900" textAnchor="middle">
-              <text className="hidden sm:block" x="790" y="292" fontSize="222" textLength="730" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
-              <text className="sm:hidden" x="768" y="292" fontSize="138" textLength="430" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
+            {/* Filter đặt ở nhóm ngoài, nhóm animate bên trong không đụng tới thuộc tính filter */}
+            <g filter="url(#lv-glow)">
+              <g className="hero-title" fill="url(#lv-type)" fontFamily={TITLE_FONT} fontStyle="italic" fontWeight="900" textAnchor="middle">
+                <text className="hidden sm:block" x="790" y="292" fontSize="222" textLength="730" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
+                <text className="sm:hidden" x="768" y="292" fontSize="138" textLength="430" lengthAdjust="spacingAndGlyphs">Làng Vân</text>
+              </g>
             </g>
           </g>
 
