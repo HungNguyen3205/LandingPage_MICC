@@ -11,6 +11,7 @@ import { Experiences } from '../components/Experiences';
 import { StoryCta } from '../components/StoryCta';
 import { JourneyBar } from '../components/JourneyBar';
 import { SalesPolicy } from '../components/SalesPolicy';
+import { UnitShowcase } from '../components/UnitShowcase';
 import { featureFlags } from '../data/projectData';
 import { FAQ } from '../components/FAQ';
 import { ConsultationForm } from '../components/ConsultationForm';
@@ -99,6 +100,9 @@ export const HomePage: React.FC = () => {
 
       {/* 02. Product Collection */}
       <Collection onSelectProduct={handleSelectProduct} />
+
+      {/* Quỹ căn: poster từng căn trượt ngang */}
+      {featureFlags.showUnitShowcase && <UnitShowcase />}
       {/* Tạm ẩn theo yêu cầu khách — bật lại bằng featureFlags.showPriceList trong projectData.ts */}
       {featureFlags.showPriceList && (
         <SalesPolicy onSelectUnit={handleSelectUnit} onSelectProduct={handleSelectProduct} />

@@ -8,6 +8,8 @@ interface LightboxProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigate: (index: number) => void;
+  /** Dòng chú thích nhỏ dưới ảnh */
+  note?: string;
 }
 
 export const Lightbox: React.FC<LightboxProps> = ({
@@ -16,6 +18,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   isOpen,
   onClose,
   onNavigate,
+  note = '* Hình ảnh tham khảo phong cách thiết kế',
 }) => {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const currentItem = items[currentIndex];
@@ -116,9 +119,11 @@ export const Lightbox: React.FC<LightboxProps> = ({
           <p className="text-sand/70 text-xs sm:text-sm font-light">
             {currentItem.caption}
           </p>
-          <span className="inline-block mt-2 text-[10px] text-sand/50 italic">
-            * Hình ảnh tham khảo phong cách thiết kế
-          </span>
+          {note && (
+            <span className="inline-block mt-2 text-[10px] text-sand/50 italic">
+              {note}
+            </span>
+          )}
         </div>
       </div>
     </div>

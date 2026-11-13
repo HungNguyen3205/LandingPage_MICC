@@ -30,6 +30,8 @@ export const projectMeta: ProjectMetadata = {
  */
 export const featureFlags = {
   showPriceList: false,
+  /** Dải ảnh quỹ căn trượt ngang (#quy-can), ảnh lấy từ thư mục Drive của khách */
+  showUnitShowcase: true,
 };
 
 export const navigationItems: NavItem[] = [
@@ -38,6 +40,7 @@ export const navigationItems: NavItem[] = [
   { label: 'Tiện ích', href: '/#tien-ich' },
   { label: 'Vị trí', href: '/#vi-tri' },
   { label: 'Thư viện', href: '/#thu-vien' },
+  ...(featureFlags.showUnitShowcase ? [{ label: 'Quỹ căn', href: '/#quy-can' }] : []),
   ...(featureFlags.showPriceList ? [{ label: 'Bảng giá', href: '/#bang-gia' }] : []),
   { label: 'Liên hệ', href: '/lien-he' },
 ];
@@ -329,4 +332,30 @@ export const faqData: FAQItem[] = [
     question: 'Làm thế nào để tôi nhận bảng giá và đăng ký lịch xem thực tế?',
     answer: 'Quý khách vui lòng để lại thông tin trong biểu mẫu đăng ký tư vấn hoặc liên hệ trực tiếp hotline 0905 688 070. Chuyên viên tư vấn F1 sẽ gửi trọn bộ tài liệu chi tiết, mặt bằng phân lô, bảng giá ngoại giao và hỗ trợ đưa đón quý khách tham quan thực tế.',
   },
+];
+
+/**
+ * Quỹ căn đang mở bán: mỗi căn một ảnh poster (public/images/quy-can/<mã>.webp, bản nhỏ <mã>-sm.webp).
+ * Nguồn: thư mục Google Drive của khách (11/2026). Thêm căn: thả 2 ảnh vào thư mục rồi thêm một dòng ở đây.
+ */
+export interface ShowcaseUnit {
+  code: string;
+  type: string;
+  area: string;
+}
+
+export const unitShowcaseData: ShowcaseUnit[] = [
+  { code: 'BV3-4X', type: 'Đơn lập', area: '230m²' },
+  { code: 'BV6-2X', type: 'Song lập', area: '140m²' },
+  { code: 'BV7-1X', type: 'Song lập', area: '140m²' },
+  { code: 'BV8-0X', type: 'Song lập', area: '140m²' },
+  { code: 'BV10-0X', type: 'Song lập', area: '140m²' },
+  { code: 'BV10-4X', type: 'Song lập', area: '140m²' },
+  { code: 'BV11-0X', type: 'Song lập', area: '161m²' },
+  { code: 'BV14-1X', type: 'Song lập', area: '140m²' },
+  { code: 'BV14-2X', type: 'Song lập', area: '140m²' },
+  { code: 'VK1-2X', type: 'Song lập', area: '140m²' },
+  { code: 'VK3-0X', type: 'Song lập', area: '140m²' },
+  { code: 'TK8-8X', type: 'Liền kề', area: '112m²' },
+  { code: 'VU1-169', type: 'Liền kề', area: '70m²' },
 ];
