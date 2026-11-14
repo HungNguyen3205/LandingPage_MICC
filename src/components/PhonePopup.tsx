@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { CheckCircle2, Hourglass, Loader2, ShieldCheck, Ticket, X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { CheckCircle2, Loader2, X } from 'lucide-react';
 import { leadService } from '../services/consultationService';
 
-/** Popup voucher chỉ xin số điện thoại. Lead đi chung đường /api/consultation → Telegram + Google Sheet. */
+/** Popup chiến dịch "Cơ hội cuối năm 2026" chỉ xin số điện thoại. Lead đi chung đường /api/consultation → Telegram + Google Sheet. */
 
 const SHOW_DELAY_MS = 600; // vào web là hiện (chờ một nhịp cho trang kịp hiện)
-const HIDDEN_ON = ['/dang-ky-thanh-cong', '/chinh-sach-bao-mat'];
+const HIDDEN_ON = ['/dang-ky-thanh-cong'];
 const PHONE_REGEX = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
 
 // Các backend đều bắt buộc họ tên ≥ 2 ký tự: dùng tên tạm để Telegram/Sheet nhận ra lead voucher từ popup
 const POPUP_NAME = '🎫 Khách có voucher';
-const PAGE_LABELS: Record<string, string> = { '/': 'Trang chủ', '/lien-he': 'Trang liên hệ' };
+const PAGE_LABELS: Record<string, string> = { '/': 'Trang chủ' };
 
 export const PhonePopup: React.FC = () => {
   const { pathname } = useLocation();
@@ -37,7 +37,7 @@ export const PhonePopup: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [hiddenHere]);
 
-  // Chuyển sang trang thành công / chính sách thì ẩn luôn
+  // Chuyển sang trang thành công thì ẩn luôn
   const visible = open && !hiddenHere;
 
   // Khoá cuộn trang, Esc để đóng
@@ -109,145 +109,136 @@ export const PhonePopup: React.FC = () => {
         if (e.target === e.currentTarget) setOpen(false);
       }}
     >
+      {/* Thẻ vuông đúng tỉ lệ ảnh, luôn vừa màn hình cả chiều ngang lẫn chiều cao; cỡ chữ bên trong co theo thẻ (cqw) */}
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="phone-popup-title"
-        className="popup-card relative isolate w-full max-w-[400px] overflow-hidden rounded-[22px] shadow-[0_30px_80px_-20px_rgba(0,0,0,.7)] ring-1 ring-champagne/40"
+        aria-describedby="phone-popup-desc"
+        className="popup-card relative isolate aspect-square w-[min(480px,calc(100vw-2rem),calc(100dvh-2rem))] overflow-hidden rounded-[22px] bg-sand shadow-[0_30px_80px_-20px_rgba(0,0,0,.75)] ring-1 ring-champagne/50 [container-type:inline-size]"
       >
-        {/* Nền: ảnh Làng Vân (đã tải sẵn ở hero) phủ lớp xanh rừng chuyển sắc */}
+        {/* Ảnh chiến dịch phủ toàn thẻ; chữ trong ảnh được nhắc lại ở tiêu đề ẩn + alt cho Google và trình đọc màn hình */}
         <img
-          src="/images/lang-van/hero-bg.webp"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 -z-20 h-full w-full object-cover object-top"
+          src="/images/popup/co-hoi-cuoi-nam-2026.webp"
+          srcSet="/images/popup/co-hoi-cuoi-nam-2026-480.webp 480w, /images/popup/co-hoi-cuoi-nam-2026.webp 800w"
+          sizes="(max-width: 512px) calc(100vw - 2rem), 480px"
+          width={800}
+          height={800}
+          alt="Cơ hội cuối năm 2026 – Chốt ngay giữ đặc quyền tại Vinhomes Hai Van Bay cùng MICC Group và NexMe, phối cảnh khu biệt thự đồi ven biển"
+          decoding="async"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-dark/55 via-forest-dark/85 to-forest-dark"
-        />
+        <h2 id="phone-popup-title" className="sr-only">
+          Cơ hội cuối năm 2026 – Chốt ngay giữ đặc quyền
+        </h2>
 
         <button
           type="button"
           onClick={() => setOpen(false)}
           aria-label="Đóng"
-          className="absolute top-3 right-3 z-10 rounded-full bg-black/30 p-2 text-white/85 backdrop-blur transition hover:bg-black/50 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne"
+          className="absolute top-[2.4cqw] right-[2.4cqw] z-10 grid h-[max(30px,7.5cqw)] w-[max(30px,7.5cqw)] place-items-center rounded-full bg-white/35 text-forest-dark ring-1 ring-white/60 backdrop-blur-sm transition hover:bg-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-champagne"
         >
-          <X className="h-5 w-5" aria-hidden="true" />
+          <X className="h-[max(14px,3.6cqw)] w-[max(14px,3.6cqw)]" strokeWidth={1.75} aria-hidden="true" />
         </button>
 
-        <div className="px-6 pt-10 pb-6 text-center text-white sm:px-8">
-          {done ? (
-            <div className="py-6" role="status">
-              <CheckCircle2 className="mx-auto mb-4 h-14 w-14 text-champagne" aria-hidden="true" />
-              <p className="font-serif text-2xl mb-2">Đã nhận số của Anh/Chị</p>
-              <p className="text-sm text-white/80 leading-relaxed">{done}</p>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="mt-7 w-full rounded-full bg-champagne py-3.5 text-sm font-semibold text-forest-dark transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              >
-                Tiếp tục xem dự án
-              </button>
-            </div>
-          ) : (
-            <>
-              {/* Vé voucher */}
-              <div className="voucher-ticket relative mx-auto mb-5 flex w-fit items-center gap-2 rounded-lg bg-gradient-to-r from-[#e9cf9a] via-champagne to-[#e9cf9a] px-5 py-2.5 shadow-[0_8px_24px_-8px_rgba(0,0,0,.6)] ring-1 ring-white/40">
-                <Ticket className="h-4 w-4 text-forest-dark" aria-hidden="true" />
-                <span className="text-xs font-bold uppercase tracking-[.24em] text-forest-dark">Voucher Vinhomes</span>
-              </div>
+        {/* Vùng phong cảnh bên dưới dòng "Chốt ngay giữ đặc quyền": thẻ form căn giữa theo chiều dọc vùng này */}
+        <div className="absolute inset-x-[9%] top-[46%] bottom-[5%] flex items-center">
+        {/* Thẻ kính xanh rừng viền vàng champagne (tông của vé vàng trong ảnh) */}
+        <div className="popup-panel relative w-full rounded-[3.6cqw] bg-gradient-to-b from-forest-dark/80 to-forest-dark/90 p-[max(4px,1cqw)] shadow-[0_24px_50px_-18px_rgba(0,0,0,.75)] ring-1 ring-champagne/60 backdrop-blur-md">
+          <div className="relative rounded-[2.8cqw] border border-champagne/25 px-[max(12px,3.6cqw)] pt-[max(10px,2.8cqw)] pb-[max(10px,2.4cqw)] text-center">
+            {/* Viên kim cương nhỏ đính trên mép thẻ */}
+            <span
+              aria-hidden="true"
+              className="absolute left-1/2 top-0 h-[max(8px,2cqw)] w-[max(8px,2cqw)] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gradient-to-br from-[#f3dfb2] to-champagne-hover ring-[3px] ring-forest-dark"
+            />
 
-              <h2 id="phone-popup-title" className="mb-4">
-                <span className="block font-serif text-[28px] leading-tight sm:text-[32px]">Tận dụng tối đa</span>
-                <span className="block font-['Great_Vibes',cursive] text-[42px] leading-tight text-champagne drop-shadow">
-                  voucher của bạn
-                </span>
-              </h2>
-              <p className="mx-auto mb-6 max-w-[300px] text-sm leading-relaxed text-white/80">
-                Để lại số điện thoại để được tư vấn chi tiết
-              </p>
-
-              <form onSubmit={handleSubmit} noValidate>
-                {/* Honeypot chống bot */}
-                <div style={{ display: 'none' }} aria-hidden="true">
-                  <input
-                    type="text"
-                    name="_hp_company"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                  />
-                </div>
-
-                <label htmlFor="popup-phone" className="sr-only">Số điện thoại</label>
-                <input
-                  ref={inputRef}
-                  id="popup-phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    if (error) setError('');
-                  }}
-                  placeholder="Số điện thoại của bạn"
-                  disabled={submitting}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={error ? 'popup-phone-error' : undefined}
-                  className={`w-full rounded-full border bg-white/95 px-5 py-3.5 text-center text-base text-forest-dark tracking-wide placeholder:text-ink-muted/60 focus:outline-none focus:ring-2 focus:ring-champagne ${
-                    error ? 'border-rose-400' : 'border-transparent'
-                  }`}
-                />
-                {error && (
-                  <p id="popup-phone-error" className="mt-2 text-xs text-rose-300" role="alert">
-                    {error}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="cta-shine relative mt-3 flex overflow-hidden w-full items-center justify-center gap-2 rounded-full bg-champagne py-3.5 text-sm sm:text-base font-semibold tracking-wide text-forest-dark shadow-lg transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                      Đang gửi...
-                    </>
-                  ) : (
-                    'Nhận tư vấn voucher'
-                  )}
-                </button>
-              </form>
-
-              <p className="mt-4 flex items-center justify-center gap-1.5 text-[13px] text-white/85">
-                <Hourglass className="h-3.5 w-3.5 shrink-0 text-champagne" aria-hidden="true" />
-                <span>
-                  Chính sách ưu đãi có thời hạn –{' '}
-                  <strong className="font-semibold text-champagne">Quy đổi ngay!!!</strong>
-                </span>
-              </p>
-
-              <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-white/15 bg-white/10 p-3 text-left backdrop-blur">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-champagne" aria-hidden="true" />
-                <p className="text-[12px] leading-relaxed text-white/80">
-                  <strong className="font-semibold text-white">Cam kết bảo mật thông tin khách hàng.</strong>{' '}
-                  Số điện thoại chỉ dùng để chuyên viên liên hệ tư vấn, tuyệt đối không chia sẻ cho bên thứ ba.{' '}
-                  <Link
-                    to="/chinh-sach-bao-mat"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium text-champagne underline underline-offset-2 hover:text-white"
-                  >
-                    Chính sách bảo mật
-                  </Link>
+            {done ? (
+              <div className="popup-fade-in py-[1cqw]" role="status">
+                <p className="flex items-center justify-center gap-[1.5cqw] font-serif text-[max(15px,4.2cqw)] leading-tight text-champagne-light">
+                  <CheckCircle2 className="h-[1.05em] w-[1.05em] shrink-0 text-champagne" strokeWidth={1.75} aria-hidden="true" />
+                  Đã nhận số của Anh/Chị
                 </p>
+                <p className="mt-[1.2cqw] text-[max(12px,2.9cqw)] leading-snug text-white/75">{done}</p>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="gold-btn mt-[2.6cqw] inline-flex h-[max(38px,9cqw)] items-center rounded-full px-[6cqw] text-[max(11px,2.6cqw)] font-bold uppercase tracking-[.16em] text-forest-dark transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                >
+                  Tiếp tục xem dự án
+                </button>
               </div>
-            </>
-          )}
+            ) : (
+              <>
+                <p
+                  id="phone-popup-desc"
+                  className="mb-[2.2cqw] font-serif text-[max(13px,3.5cqw)] italic leading-tight text-champagne-light"
+                >
+                  Để lại số điện thoại để được tư vấn
+                </p>
+
+                <form onSubmit={handleSubmit} noValidate>
+                  {/* Honeypot chống bot */}
+                  <div style={{ display: 'none' }} aria-hidden="true">
+                    <input
+                      type="text"
+                      name="_hp_company"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </div>
+
+                  <label htmlFor="popup-phone" className="sr-only">Số điện thoại</label>
+                  {/* Ô nhập và nút vàng gộp thành một viên thuốc */}
+                  <div
+                    className={`flex h-[max(42px,10cqw)] items-center rounded-full bg-sand-light p-[max(3px,.8cqw)] ring-1 transition focus-within:ring-2 focus-within:ring-champagne ${
+                      error ? 'ring-rose-400' : 'ring-champagne/50'
+                    }`}
+                  >
+                    <input
+                      ref={inputRef}
+                      id="popup-phone"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        if (error) setError('');
+                      }}
+                      placeholder="Số điện thoại"
+                      disabled={submitting}
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={error ? 'popup-phone-error' : undefined}
+                      className="h-full min-w-0 flex-1 bg-transparent pl-[max(14px,3.6cqw)] pr-2 text-base tracking-wide text-forest-dark placeholder:text-ink-light focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="gold-btn cta-shine relative flex h-full shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-full px-[max(14px,4cqw)] text-[max(11px,2.6cqw)] font-bold uppercase tracking-[.14em] text-forest-dark transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                          Đang gửi
+                        </>
+                      ) : (
+                        'Nhận tư vấn'
+                      )}
+                    </button>
+                  </div>
+                  {error && (
+                    <p id="popup-phone-error" className="mt-[1.4cqw] text-[max(11px,2.6cqw)] font-medium text-rose-300" role="alert">
+                      {error}
+                    </p>
+                  )}
+                </form>
+
+              </>
+            )}
+          </div>
+        </div>
         </div>
       </div>
     </div>

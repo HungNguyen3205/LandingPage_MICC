@@ -69,15 +69,6 @@ export const Header: React.FC = () => {
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
 
-    if (href === '/lien-he') {
-      if (location.pathname !== '/lien-he') {
-        navigate('/lien-he');
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      return;
-    }
-
     // Hash links (e.g. /#tong-quan, /#bo-suu-tap, etc.)
     if (href.startsWith('/#') || href.startsWith('#')) {
       const hash = href.includes('#') ? `#${href.split('#')[1]}` : href;
@@ -137,10 +128,7 @@ export const Header: React.FC = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 whitespace-nowrap" aria-label="Điều hướng chính">
-              {navigationItems.map((item) => {
-                const isActive = item.href === '/lien-he' && location.pathname === '/lien-he';
-
-                return (
+              {navigationItems.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -149,23 +137,13 @@ export const Header: React.FC = () => {
                       handleNavClick(item.href);
                     }}
                     className={`text-[14px] font-medium tracking-wide transition-colors duration-200 relative py-1 focus:outline-none focus-visible:ring-1 focus-visible:ring-champagne ${
-                      isActive
-                        ? 'text-forest font-semibold'
-                        : showSolidHeader
-                        ? 'text-ink hover:text-forest'
-                        : 'text-white/90 hover:text-white'
+                      showSolidHeader ? 'text-ink hover:text-forest' : 'text-white/90 hover:text-white'
                     }`}
-                    aria-current={isActive ? 'page' : undefined}
                   >
                     {item.label}
-                    <span
-                      className={`absolute bottom-0 left-0 h-[1.5px] bg-champagne transition-all duration-200 ${
-                        isActive ? 'w-full' : 'w-0 hover:w-full'
-                      }`}
-                    />
+                    <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-champagne transition-all duration-200 hover:w-full" />
                   </a>
-                );
-              })}
+              ))}
             </nav>
 
             {/* Right Action CTA */}
@@ -248,10 +226,7 @@ export const Header: React.FC = () => {
           </div>
 
           <nav className="mt-8 flex flex-col space-y-3" aria-label="Menu di động danh sách">
-            {navigationItems.map((item) => {
-              const isActive = item.href === '/lien-he' && location.pathname === '/lien-he';
-
-              return (
+            {navigationItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
@@ -259,20 +234,12 @@ export const Header: React.FC = () => {
                     e.preventDefault();
                     handleNavClick(item.href);
                   }}
-                  className={`text-base font-medium py-2.5 px-3 rounded-md transition-colors duration-150 flex items-center justify-between ${
-                    isActive
-                      ? 'bg-forest text-white'
-                      : 'text-ink hover:text-forest hover:bg-forest/5'
-                  }`}
-                  aria-current={isActive ? 'page' : undefined}
+                  className="text-base font-medium py-2.5 px-3 rounded-md transition-colors duration-150 flex items-center justify-between text-ink hover:text-forest hover:bg-forest/5"
                 >
                   <span>{item.label}</span>
-                  <span className={`font-serif text-sm ${isActive ? 'text-champagne' : 'text-champagne'}`}>
-                    →
-                  </span>
+                  <span className="font-serif text-sm text-champagne">→</span>
                 </a>
-              );
-            })}
+            ))}
           </nav>
         </div>
 

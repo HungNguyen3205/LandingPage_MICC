@@ -78,7 +78,7 @@ export const SuccessPage: React.FC = () => {
             <ArrowRight className="w-4 h-4 ml-2 text-champagne" />
           </Link>
           <Link
-            to="/lien-he"
+            to="/#lien-he"
             className="inline-flex items-center justify-center px-6 py-3 rounded-luxury bg-white border border-forest/15 hover:border-forest/30 text-forest text-sm font-medium tracking-wide transition-colors"
           >
             <span>Gửi thêm yêu cầu khác</span>

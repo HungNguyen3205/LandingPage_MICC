@@ -9,8 +9,6 @@ const __dirname = path.dirname(__filename);
 
 const KNOWN_ROUTES = new Set([
   '/',
-  '/lien-he',
-  '/chinh-sach-bao-mat',
   '/dang-ky-thanh-cong',
 ]);
 

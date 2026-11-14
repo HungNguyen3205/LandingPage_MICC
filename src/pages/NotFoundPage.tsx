@@ -66,7 +66,7 @@ export const NotFoundPage: React.FC = () => {
 
           {/* Secondary Button */}
           <Link
-            to="/lien-he"
+            to="/#lien-he"
             className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-sm bg-transparent border border-champagne text-forest hover:bg-champagne/10 text-xs font-mono uppercase tracking-wider transition-all duration-200 group cursor-pointer"
           >
             <span>Liên hệ tư vấn</span>

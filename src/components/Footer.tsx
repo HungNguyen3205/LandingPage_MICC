@@ -9,15 +9,6 @@ export const Footer: React.FC = () => {
   const navigate = useNavigate();
 
   const handleNavClick = (href: string) => {
-    if (href === '/lien-he') {
-      if (location.pathname !== '/lien-he') {
-        navigate('/lien-he');
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      return;
-    }
-
     if (href.startsWith('/#') || href.startsWith('#')) {
       const hash = href.includes('#') ? `#${href.split('#')[1]}` : href;
       const targetId = hash.replace('#', '');
@@ -92,15 +83,6 @@ export const Footer: React.FC = () => {
                 </li>
               ))}
               <li>
-                <Link
-                  to="/chinh-sach-bao-mat"
-                  className="text-xs sm:text-sm text-sand/80 hover:text-white transition-colors duration-150 flex items-center group cursor-pointer"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-champagne/40 mr-2.5 group-hover:bg-champagne transition-colors" />
-                  <span>Chính sách bảo mật</span>
-                </Link>
-              </li>
-              <li>
                 <button
                   type="button"
                   onClick={() => handleNavClick(consultationCtaConfig.href)}
@@ -155,13 +137,6 @@ export const Footer: React.FC = () => {
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-sand/60 font-light">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1">
             <span>© {CURRENT_YEAR} {projectMeta.brandName}. {projectMeta.designerCredit}.</span>
-            <span className="hidden sm:inline text-sand/30">|</span>
-            <Link
-              to="/chinh-sach-bao-mat"
-              className="text-sand/70 hover:text-champagne transition-colors underline-offset-4 hover:underline"
-            >
-              Chính sách bảo mật
-            </Link>
           </div>
 
           <div className="text-center md:text-right">

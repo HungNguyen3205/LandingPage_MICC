@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { ConsultationFormData, SelectedUnit } from '../types';
 import { productsData } from '../data/projectData';
 import { leadService } from '../services/consultationService';
@@ -472,7 +472,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({
           />
         </div>
 
-        {/* Row 5: Consent Checkbox & Privacy Link */}
+        {/* Row 5: Consent Checkbox */}
         <div className="pt-2">
           <label className="flex items-start space-x-3 cursor-pointer group">
             <input
@@ -487,15 +487,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({
             />
             <span className="text-xs text-ink-muted leading-relaxed group-hover:text-forest transition-colors">
               Tôi đồng ý để đơn vị tư vấn sử dụng thông tin trên nhằm liên hệ về nhu cầu đã đăng ký.{' '}
-              <span className="text-rose-600">*</span>{' '}
-              <Link
-                to="/chinh-sach-bao-mat"
-                className="text-forest hover:text-champagne font-medium underline underline-offset-2 ml-1"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Xem chính sách bảo mật
-              </Link>
+              <span className="text-rose-600">*</span>
             </span>
           </label>
           {errors.consentAgreed && (

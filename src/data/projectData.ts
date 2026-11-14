@@ -6,9 +6,7 @@ import type {
   GalleryItem,
   FAQItem,
   QuickContactConfig,
-  ContactInfoConfig,
   ProjectMetadata,
-  PrivacyPolicyConfig,
   ExperienceItem
 } from '../types';
 
@@ -47,28 +45,12 @@ export const navigationItems: NavItem[] = [
   { label: 'Vị trí', href: '/#vi-tri' },
   { label: 'Thư viện', href: '/#thu-vien' },
   ...(featureFlags.showPriceList ? [{ label: 'Bảng giá', href: '/#bang-gia' }] : []),
-  { label: 'Liên hệ', href: '/lien-he' },
+  { label: 'Liên hệ', href: '/#lien-he' },
 ];
 
 export const consultationCtaConfig = {
   label: 'Đăng ký tư vấn',
-  href: '/lien-he',
-};
-
-export const contactConfig: ContactInfoConfig = {
-  advisorUnit: 'Văn phòng Bán hàng Vinhomes Hải Vân Bay (MICC Group · NEXME)',
-  hotline: '0905 688 070',
-  email: 'danava.haivanbay@gmail.com',
-  officeAddress: '305A Trần Hưng Đạo, P. An Hải, TP. Đà Nẵng',
-  mapCoordinates: undefined,
-  officialMapEmbedUrl: undefined,
-};
-
-export const privacyPolicyConfig: PrivacyPolicyConfig = {
-  lastUpdatedDate: '20/10/2026',
-  operatorNotice: 'Nội dung cập nhật dựa trên thông tin công bố chính thức của dự án Vinhomes Hải Vân Bay Đà Nẵng.',
-  retentionNotice: 'Lưu trữ phục vụ liên hệ tư vấn và gửi tài liệu dự án',
-  contactNotice: 'Hotline tiếp nhận: 0905 688 070 • Văn phòng: 305A Trần Hưng Đạo, P. An Hải, TP. Đà Nẵng',
+  href: '/#lien-he',
 };
 
 export const VALID_PRODUCT_PARAM_MAP: Record<string, string> = {

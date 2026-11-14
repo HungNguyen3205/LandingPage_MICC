@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { QuickContact } from './components/QuickContact';
 import { PhonePopup } from './components/PhonePopup';
 import { HomePage } from './pages/HomePage';
-import { ContactPage } from './pages/ContactPage';
-import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { SuccessPage } from './pages/SuccessPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -39,8 +37,9 @@ export function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/lien-he" element={<ContactPage />} />
-            <Route path="/chinh-sach-bao-mat" element={<PrivacyPolicyPage />} />
+            {/* Trang liên hệ & chính sách cũ đã bỏ: link cũ chuyển về form đăng ký trên trang chủ */}
+            <Route path="/lien-he" element={<Navigate to="/#lien-he" replace />} />
+            <Route path="/chinh-sach-bao-mat" element={<Navigate to="/" replace />} />
             <Route path="/dang-ky-thanh-cong" element={<SuccessPage />} />
             {/* 404 Route for any unmatched paths */}
             <Route path="*" element={<NotFoundPage />} />

@@ -112,15 +112,6 @@ export interface QuickContactConfig {
   enableMobileBottomBar: boolean;
 }
 
-export interface ContactInfoConfig {
-  advisorUnit?: string;
-  hotline?: string;
-  email?: string;
-  officeAddress?: string;
-  mapCoordinates?: { lat: number; lng: number };
-  officialMapEmbedUrl?: string;
-}
-
 export interface ProjectMetadata {
   brandName: string;
   brandSubtitle: string;
@@ -132,9 +123,3 @@ export interface ProjectMetadata {
   contactStatusNotice: string;
 }
 
-export interface PrivacyPolicyConfig {
-  lastUpdatedDate: string;
-  operatorNotice: string;
-  retentionNotice: string;
-  contactNotice: string;
-}
