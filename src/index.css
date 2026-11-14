@@ -188,6 +188,11 @@
 .popup-fade-in { animation: popup-fade .4s ease-out both; }
 /* Thẻ form trồi lên sau thẻ ảnh một nhịp */
 .popup-panel { animation: popup-rise .6s .35s cubic-bezier(.2, .8, .2, 1) both; }
+/* Chữ vàng ánh kim cho câu kêu gọi voucher trên nền xanh */
+.gold-text {
+  background: linear-gradient(90deg, #c8a46b 0%, #f3dfb2 50%, #c8a46b 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 /* Nút vàng champagne ánh kim, cùng tông vé vàng trong ảnh chiến dịch */
 .gold-btn {
   background: linear-gradient(135deg, #f3dfb2 0%, #d9b97c 38%, #c8a46b 62%, #a8834a 100%);

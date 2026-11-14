@@ -169,12 +169,23 @@ export const PhonePopup: React.FC = () => {
               </div>
             ) : (
               <>
-                <p
-                  id="phone-popup-desc"
-                  className="mb-[2.2cqw] font-serif text-[max(13px,3.5cqw)] italic leading-tight text-champagne-light"
-                >
-                  Để lại số điện thoại để được tư vấn
-                </p>
+                <div id="phone-popup-desc" className="mb-[2.2cqw]">
+                  {/* Câu kêu gọi vận dụng voucher: chữ vàng ánh kim cùng tông nút */}
+                  {/* Mỗi kiểu chữ một dòng: serif in hoa nhẹ → chữ viết tay vàng → serif nghiêng */}
+                  <p className="font-serif text-[max(15px,4.4cqw)] leading-tight tracking-wide text-white">
+                    Tận dụng tối đa
+                  </p>
+                  <p className="-mt-[.6cqw] leading-none">
+                    <span className="gold-text inline-block px-[1.5cqw] pb-[.8cqw] pt-[.4cqw] font-['Great_Vibes'] text-[max(26px,7.6cqw)]">
+                      voucher của bạn
+                    </span>
+                  </p>
+                  <span className="mx-auto mt-[.4cqw] mb-[1.4cqw] block h-px w-[22cqw] bg-gradient-to-r from-transparent via-champagne/70 to-transparent" aria-hidden="true" />
+                  {/* Serif cổ điển in hoa giống dòng "CƠ HỘI CUỐI NĂM 2026" trong ảnh */}
+                  <p className="font-['Cormorant_Garamond'] text-[max(12px,3.3cqw)] font-bold uppercase leading-snug tracking-[.06em] text-champagne-light [text-wrap:balance]">
+                    Để lại số điện thoại để được tư vấn
+                  </p>
+                </div>
 
                 <form onSubmit={handleSubmit} noValidate>
                   {/* Honeypot chống bot */}
