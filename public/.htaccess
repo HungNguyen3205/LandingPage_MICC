@@ -1,19 +1,38 @@
+# Cấu hình cho hosting cPanel / LiteSpeed (AZDIGI). Upload cùng nội dung thư mục dist/ vào public_html.
+Options -Indexes
+DirectoryIndex index.html
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Chuyển tiếp API tiếp nhận Lead sang script PHP
+  # 0a. www → tên miền chính (một lần redirect, đi thẳng sang HTTPS)
+  RewriteCond %{HTTP_HOST} ^www\.vinhomeshaivanbaydanang\.vn$ [NC]
+  RewriteRule ^ https://vinhomeshaivanbaydanang.vn%{REQUEST_URI} [L,R=301]
+
+  # 0b. Ép HTTPS (bật SSL Let's Encrypt trong cPanel trước)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 1. API tiếp nhận lead → script PHP
   RewriteRule ^api/consultation/?$ api/consultation.php [L,QSA]
 
-  # 2. Định tuyến cho React Router SPA (Trang chủ, Liên hệ, Chính sách, Thành công...)
+  # 2. Trang cũ đã gộp vào trang chủ (giống public/_redirects)
+  RewriteRule ^lien-he/?$ /#lien-he [R=301,NE,L]
+  RewriteRule ^chinh-sach-bao-mat/?$ / [R=301,L]
+
+  # 3. Route hợp lệ của React Router → index.html (HTTP 200)
   RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-l
-  RewriteRule . /index.html [L]
+  RewriteRule ^dang-ky-thanh-cong/?$ index.html [L]
+
+  # 4. File/thư mục có thật thì phục vụ trực tiếp; còn lại để ErrorDocument trả 404 thật
 </IfModule>
 
-# 3. Chặn truy cập trực tiếp file cấu hình nhạy cảm
+# Route không tồn tại: HTTP 404 kèm giao diện React (404.html được tạo khi build)
+ErrorDocument 404 /404.html
+
+# Chặn truy cập trực tiếp file cấu hình nhạy cảm
 <FilesMatch "^\.env|\.git|\.md$|config(\.local)?\.php$">
   <IfModule mod_authz_core.c>
     Require all denied
@@ -24,19 +43,35 @@
   </IfModule>
 </FilesMatch>
 
-# 4. Bật nén Gzip tối ưu tốc độ tải trang trên AZDIGI / LiteSpeed
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+# Header bảo mật (giống vercel.json)
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # index.html không cache để khách luôn nhận bản build mới
+  <FilesMatch "^(index|404)\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
 </IfModule>
 
-# 5. Cấu hình Cache trình duyệt cho hình ảnh và tài nguyên tĩnh
+# Nén Gzip
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache trình duyệt: asset của Vite có hash trong tên nên cache dài được
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/jpg "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"
   ExpiresByType image/gif "access plus 1 year"
   ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
