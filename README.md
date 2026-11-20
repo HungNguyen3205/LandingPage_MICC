@@ -1,32 +1,17 @@
-# React + TypeScript + Vite
+# Landing page MICC · Hải Vân Bay
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Website: <https://vinhomeshaivanbaydanang.vn> (React + Vite, API nhận lead bằng PHP trên hosting cPanel AZDIGI).
 
-Currently, two official plugins are available:
+## Tài liệu
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [docs/HUONG_DAN_SERVER.md](docs/HUONG_DAN_SERVER.md): **đọc đầu tiên**. Thông tin server, cách build & đưa bản mới lên, kiểm tra, xử lý lỗi
+- [docs/HUONG_DAN_VERCEL.md](docs/HUONG_DAN_VERCEL.md): bản dự phòng trên Vercel, cách tạo bot Telegram / Google Sheet riêng
+- [docs/LEAD_INTEGRATION_GUIDE.md](docs/LEAD_INTEGRATION_GUIDE.md): cấu trúc Google Sheet & mã Apps Script
 
-## React Compiler
+## Chạy trên máy
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm ci
+npm run dev      # http://localhost:5173
+npm run build    # tạo dist/ để upload
 ```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
